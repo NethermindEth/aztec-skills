@@ -5,6 +5,8 @@
 - `version_label`: `v4.0.0-devnet.2-patch.1`
 - `commit_sha`: `1dbe894364c0d179d2f6443b47887766bbf51343`
 - `skill_name`: `aztec-contracts`
+- `candidate_doc`: `docs/internal_notes/llm_docs_skill_candidates.md`
+- `source_repository`: `aztec-packages`
 
 ## Source Docs (Pinned)
 
@@ -42,3 +44,19 @@ Exclude:
 - `docs/static/aztec-nr-api/nightly/**`
 - `docs/developer_versioned_docs/**`
 - `docs/network_versioned_docs/**`
+
+## Concrete File Inventories
+
+Generate concrete path inventories from the pinned repository with:
+
+```bash
+scripts/build_corpus.sh /path/to/aztec-packages
+```
+
+Then use:
+
+- `references/full-docs/source-docs.txt`
+- `references/full-docs/generated-api-docs.txt`
+- `references/full-docs/referenced-code-fanout.txt`
+- `references/full-docs/all-included-paths.txt`
+- `references/full-docs/excluded-paths.txt`

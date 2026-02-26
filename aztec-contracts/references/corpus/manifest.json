@@ -1,0 +1,15 @@
+{
+  "skill_name": "aztec-contracts",
+  "version_label": "v4.0.0-devnet.2-patch.1",
+  "commit_sha": "1dbe894364c0d179d2f6443b47887766bbf51343",
+  "source_repository": "aztec-packages",
+  "generated_at_utc": "2026-02-26T12:00:07Z",
+  "resolved_commit_sha": "1dbe894364c0d179d2f6443b47887766bbf51343",
+  "counts": {
+    "source_docs": 41,
+    "generated_api_docs": 1619,
+    "referenced_code_fanout": 671,
+    "all_included": 2331,
+    "excluded_paths": 2811
+  }
+}

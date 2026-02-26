@@ -1,0 +1,4 @@
+interface:
+  display_name: "Aztec Testing"
+  short_description: "Aztec contract testing and integration workflows"
+  default_prompt: "Use this skill for Noir and Aztec.js testing workflows, from unit-style contract tests to integration and governance upgrade scenarios."

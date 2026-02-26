@@ -26,3 +26,16 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 - Added `aztec-testing/agents/openai.yaml` with interface metadata for the Aztec Testing skill.
 - Added `aztec-testing/references/source-map.md` with pinned testing docs/API/code source inventory and packaging constraints.
 - Added `aztec-testing/scripts/build_corpus.sh` to scaffold corpus manifests for the testing skill.
+- Added `aztec-contracts/references/full-docs-reference.md` as navigation for generated full-docs inventories.
+- Added `aztec-contracts/references/corpus/manifest.json` with generated corpus metadata and source counts.
+- Added `aztec-contracts/references/full-docs/source-docs.txt` with concrete pinned source-doc file paths.
+- Added `aztec-contracts/references/full-docs/generated-api-docs.txt` with concrete pinned devnet API doc file paths.
+- Added `aztec-contracts/references/full-docs/referenced-code-fanout.txt` with concrete referenced code file paths.
+- Added `aztec-contracts/references/full-docs/all-included-paths.txt` with the combined included corpus path set.
+- Added `aztec-contracts/references/full-docs/excluded-paths.txt` with excluded nightly/versioned path inventories.
+
+### Changed
+
+- Changed `aztec-contracts/SKILL.md` to make the workflow portable and CLI-agent agnostic, add bundled-inventory fallback behavior, and document full index generation.
+- Changed `aztec-contracts/references/source-map.md` to include candidate-doc/source-repository metadata and concrete full-doc inventory usage instructions.
+- Changed `aztec-contracts/scripts/build_corpus.sh` from a scaffold manifest writer to a pin-aware corpus/index generator with repo auto-discovery, include/exclude path extraction, and count-rich manifest output.

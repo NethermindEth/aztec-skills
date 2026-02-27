@@ -6,10 +6,16 @@ It installs one or more Aztec skills into Codex and/or Claude skill directories,
 
 ## Installation
 
-Run with `npx`:
+Run with `npx` (recommended):
 
 ```bash
-npx install-aztec-skills
+npx install-aztec-skills@devnet
+```
+
+Or pin the exact release:
+
+```bash
+npx install-aztec-skills@4.0.0-devnet.2-patch.1-v0.1.1
 ```
 
 The installer prompts you to:

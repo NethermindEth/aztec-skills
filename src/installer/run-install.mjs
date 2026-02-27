@@ -3,6 +3,7 @@ import os from "node:os";
 import path from "node:path";
 import { select } from "@inquirer/prompts";
 import { SKILLS } from "./constants.mjs";
+import { checkInstalledSkill } from "./sanity-check.mjs";
 import { copySkill } from "./copy-skill.mjs";
 import { resolveTargetRoot } from "./paths.mjs";
 import { promptInstallSelections } from "./prompts.mjs";
@@ -34,6 +35,7 @@ export async function runInstall() {
     selections.skills.includes(skill.name)
   );
   const results = [];
+  let hasFailures = false;
 
   for (const target of selections.targets) {
     const targetRoot = resolveTargetRoot({
@@ -61,22 +63,66 @@ export async function runInstall() {
         return;
       }
 
-      const copyResult = await copySkill({
-        source: skill.sourceDir,
-        dest: destPath,
-        overwrite,
-      });
-
-      results.push({
+      const result = {
         target,
         scope: selections.scopes[target],
         skill: skill.name,
-        status: copyResult.status,
+        copyStatus: "error",
+        sanityStatus: "FAIL",
         destination: destPath,
-      });
+        errors: [],
+      };
+
+      try {
+        const copyResult = await copySkill({
+          source: skill.sourceDir,
+          dest: destPath,
+          overwrite,
+        });
+
+        result.copyStatus = copyResult.status;
+
+        const sanityResult = await checkInstalledSkill(destPath);
+        result.sanityStatus = sanityResult.ok ? "PASS" : "FAIL";
+        result.errors.push(...sanityResult.errors);
+      } catch (error) {
+        const message =
+          error instanceof Error ? error.message : "Unknown installation error.";
+        result.errors.push(message);
+      }
+
+      if (result.sanityStatus !== "PASS") {
+        hasFailures = true;
+      }
+
+      results.push(result);
     }
   }
 
-  console.log("\nCopy results:");
-  console.log(JSON.stringify(results, null, 2));
+  console.log("\nInstall summary:");
+  console.table(
+    results.map((result) => ({
+      target: result.target,
+      scope: result.scope,
+      skill: result.skill,
+      copy: result.copyStatus,
+      sanity: result.sanityStatus,
+      destination: result.destination,
+    }))
+  );
+
+  if (hasFailures) {
+    console.error("\nFailures:");
+    for (const result of results) {
+      if (result.sanityStatus === "PASS") {
+        continue;
+      }
+      console.error(`- ${result.target}/${result.skill}: ${result.destination}`);
+      for (const error of result.errors) {
+        console.error(`  - ${error}`);
+      }
+    }
+  }
+
+  process.exitCode = hasFailures ? 1 : 0;
 }

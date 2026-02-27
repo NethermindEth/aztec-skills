@@ -10,7 +10,13 @@
   },
   "files": [
     "bin",
-    "src"
+    "src",
+    "aztec-contracts",
+    "aztec-deployment",
+    "aztec-js",
+    "aztec-testing",
+    "README.md",
+    "LICENSE"
   ],
   "scripts": {
     "format": "biome format --write .",
@@ -19,7 +25,7 @@
     "check:fix": "biome check --write .",
     "typecheck": "tsc -p tsconfig.json --noEmit",
     "ci": "biome format --write . && biome check . && tsc -p tsconfig.json --noEmit && bun run test",
-    "test": "bash scripts/smoke-installer.sh"
+    "test": "bash scripts/smoke-installer.sh && bash scripts/check-packaged-contents.sh"
   },
   "dependencies": {
     "@inquirer/prompts": "^7.0.0"

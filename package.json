@@ -1,0 +1,16 @@
+{
+  "name": "install-aztec-skills",
+  "version": "0.1.0",
+  "description": "Interactive installer for Aztec skills in Codex and Claude.",
+  "type": "module",
+  "bin": {
+    "install-aztec-skills": "bin/install-aztec-skills.mjs"
+  },
+  "files": [
+    "bin",
+    "src"
+  ],
+  "dependencies": {
+    "@inquirer/prompts": "^7.0.0"
+  }
+}

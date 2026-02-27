@@ -1,88 +1,102 @@
-import fs from "node:fs/promises";
-import path from "node:path";
+import fs from 'node:fs/promises'
+import path from 'node:path'
 
+/**
+ * @typedef {{ directoryExists: boolean; skillFileExists: boolean; hasFrontmatter: boolean; hasName: boolean; hasDescription: boolean }} SkillChecks
+ */
+
+/**
+ * @param {string} markdown
+ * @returns {Set<string> | null}
+ */
 function extractFrontmatterKeys(markdown) {
-  const match = markdown.match(/^---\r?\n([\s\S]*?)\r?\n---(?:\r?\n|$)/);
+  const match = markdown.match(/^---\r?\n([\s\S]*?)\r?\n---(?:\r?\n|$)/)
   if (!match) {
-    return null;
+    return null
   }
 
-  const keys = new Set();
-  const lines = match[1].split(/\r?\n/);
+  const keys = new Set()
+  const lines = match[1].split(/\r?\n/)
 
   for (const line of lines) {
-    const keyMatch = line.match(/^([A-Za-z0-9_-]+)\s*:/);
+    const keyMatch = line.match(/^([A-Za-z0-9_-]+)\s*:/)
     if (keyMatch) {
-      keys.add(keyMatch[1]);
+      keys.add(keyMatch[1])
     }
   }
 
-  return keys;
+  return keys
 }
 
+/**
+ * @param {string} skillDir
+ * @returns {Promise<{ ok: boolean; skillDir: string; skillFile: string; checks: SkillChecks; errors: string[] }>}
+ */
 export async function checkInstalledSkill(skillDir) {
-  const resolvedSkillDir = path.resolve(skillDir);
-  const skillFile = path.join(resolvedSkillDir, "SKILL.md");
-  const errors = [];
+  const resolvedSkillDir = path.resolve(skillDir)
+  const skillFile = path.join(resolvedSkillDir, 'SKILL.md')
+  /** @type {string[]} */
+  const errors = []
+  /** @type {SkillChecks} */
   const checks = {
     directoryExists: false,
     skillFileExists: false,
     hasFrontmatter: false,
     hasName: false,
     hasDescription: false,
-  };
+  }
 
   try {
-    const dirStat = await fs.stat(resolvedSkillDir);
-    checks.directoryExists = dirStat.isDirectory();
+    const dirStat = await fs.stat(resolvedSkillDir)
+    checks.directoryExists = dirStat.isDirectory()
   } catch {
-    checks.directoryExists = false;
+    checks.directoryExists = false
   }
 
   if (!checks.directoryExists) {
-    errors.push("Destination skill directory does not exist.");
+    errors.push('Destination skill directory does not exist.')
     return {
       ok: false,
       skillDir: resolvedSkillDir,
       skillFile,
       checks,
       errors,
-    };
+    }
   }
 
   try {
-    const fileStat = await fs.stat(skillFile);
-    checks.skillFileExists = fileStat.isFile();
+    const fileStat = await fs.stat(skillFile)
+    checks.skillFileExists = fileStat.isFile()
   } catch {
-    checks.skillFileExists = false;
+    checks.skillFileExists = false
   }
 
   if (!checks.skillFileExists) {
-    errors.push("SKILL.md is missing.");
+    errors.push('SKILL.md is missing.')
     return {
       ok: false,
       skillDir: resolvedSkillDir,
       skillFile,
       checks,
       errors,
-    };
+    }
   }
 
-  const content = await fs.readFile(skillFile, "utf8");
-  const frontmatterKeys = extractFrontmatterKeys(content);
+  const content = await fs.readFile(skillFile, 'utf8')
+  const frontmatterKeys = extractFrontmatterKeys(content)
 
   if (!frontmatterKeys) {
-    errors.push("SKILL.md frontmatter block is missing or malformed.");
+    errors.push('SKILL.md frontmatter block is missing or malformed.')
   } else {
-    checks.hasFrontmatter = true;
-    checks.hasName = frontmatterKeys.has("name");
-    checks.hasDescription = frontmatterKeys.has("description");
+    checks.hasFrontmatter = true
+    checks.hasName = frontmatterKeys.has('name')
+    checks.hasDescription = frontmatterKeys.has('description')
 
     if (!checks.hasName) {
-      errors.push("SKILL.md frontmatter is missing required key: name.");
+      errors.push('SKILL.md frontmatter is missing required key: name.')
     }
     if (!checks.hasDescription) {
-      errors.push("SKILL.md frontmatter is missing required key: description.");
+      errors.push('SKILL.md frontmatter is missing required key: description.')
     }
   }
 
@@ -92,5 +106,5 @@ export async function checkInstalledSkill(skillDir) {
     skillFile,
     checks,
     errors,
-  };
+  }
 }

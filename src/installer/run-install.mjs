@@ -1,41 +1,54 @@
-import fs from "node:fs/promises";
-import os from "node:os";
-import path from "node:path";
-import { select } from "@inquirer/prompts";
-import { SKILLS } from "./constants.mjs";
-import { checkInstalledSkill } from "./sanity-check.mjs";
-import { copySkill } from "./copy-skill.mjs";
-import { resolveTargetRoot } from "./paths.mjs";
-import { promptInstallSelections } from "./prompts.mjs";
+import fs from 'node:fs/promises'
+import os from 'node:os'
+import path from 'node:path'
+import { select } from '@inquirer/prompts'
+import { SKILLS } from './constants.mjs'
+import { copySkill } from './copy-skill.mjs'
+import { resolveTargetRoot } from './paths.mjs'
+import { promptInstallSelections } from './prompts.mjs'
+import { checkInstalledSkill } from './sanity-check.mjs'
 
+/**
+ * @typedef {'replace' | 'skip' | 'abort'} OverwritePolicy
+ * @typedef {{ target: string; scope: string; skill: string; copyStatus: 'copied' | 'skipped' | 'aborted' | 'error'; sanityStatus: 'PASS' | 'FAIL'; destination: string; errors: string[] }} InstallResult
+ */
+
+/**
+ * @param {string} targetPath
+ */
 async function pathExists(targetPath) {
   try {
-    await fs.access(targetPath);
-    return true;
+    await fs.access(targetPath)
+    return true
   } catch {
-    return false;
+    return false
   }
 }
 
+/**
+ * @param {{ target: string; skillName: string; destPath: string }} options
+ * @returns {Promise<OverwritePolicy>}
+ */
 async function promptOverwritePolicy({ target, skillName, destPath }) {
   return select({
     message: `${target}/${skillName} exists at ${destPath}. Choose overwrite policy`,
     choices: [
-      { name: "replace", value: "replace" },
-      { name: "skip", value: "skip" },
-      { name: "abort", value: "abort" },
+      { name: 'replace', value: 'replace' },
+      { name: 'skip', value: 'skip' },
+      { name: 'abort', value: 'abort' },
     ],
-    default: "replace",
-  });
+    default: 'replace',
+  })
 }
 
 export async function runInstall() {
-  const selections = await promptInstallSelections();
+  const selections = await promptInstallSelections()
   const selectedSkills = SKILLS.filter((skill) =>
-    selections.skills.includes(skill.name)
-  );
-  const results = [];
-  let hasFailures = false;
+    selections.skills.includes(skill.name),
+  )
+  /** @type {InstallResult[]} */
+  const results = []
+  let hasFailures = false
 
   for (const target of selections.targets) {
     const targetRoot = resolveTargetRoot({
@@ -43,63 +56,65 @@ export async function runInstall() {
       scope: selections.scopes[target],
       cwd: process.cwd(),
       home: os.homedir(),
-    });
+    })
 
     for (const skill of selectedSkills) {
-      const destPath = path.join(targetRoot, skill.name);
-      let overwrite = "replace";
+      const destPath = path.join(targetRoot, skill.name)
+      /** @type {OverwritePolicy} */
+      let overwrite = 'replace'
 
       if (await pathExists(destPath)) {
         overwrite = await promptOverwritePolicy({
           target,
           skillName: skill.name,
           destPath,
-        });
+        })
       }
 
-      if (overwrite === "abort") {
-        console.error("Installation aborted by user.");
-        process.exitCode = 1;
-        return;
+      if (overwrite === 'abort') {
+        console.error('Installation aborted by user.')
+        process.exitCode = 1
+        return
       }
 
+      /** @type {InstallResult} */
       const result = {
         target,
         scope: selections.scopes[target],
         skill: skill.name,
-        copyStatus: "error",
-        sanityStatus: "FAIL",
+        copyStatus: 'error',
+        sanityStatus: 'FAIL',
         destination: destPath,
         errors: [],
-      };
+      }
 
       try {
         const copyResult = await copySkill({
           source: skill.sourceDir,
           dest: destPath,
           overwrite,
-        });
+        })
 
-        result.copyStatus = copyResult.status;
+        result.copyStatus = copyResult.status
 
-        const sanityResult = await checkInstalledSkill(destPath);
-        result.sanityStatus = sanityResult.ok ? "PASS" : "FAIL";
-        result.errors.push(...sanityResult.errors);
+        const sanityResult = await checkInstalledSkill(destPath)
+        result.sanityStatus = sanityResult.ok ? 'PASS' : 'FAIL'
+        result.errors.push(...sanityResult.errors)
       } catch (error) {
         const message =
-          error instanceof Error ? error.message : "Unknown installation error.";
-        result.errors.push(message);
+          error instanceof Error ? error.message : 'Unknown installation error.'
+        result.errors.push(message)
       }
 
-      if (result.sanityStatus !== "PASS") {
-        hasFailures = true;
+      if (result.sanityStatus !== 'PASS') {
+        hasFailures = true
       }
 
-      results.push(result);
+      results.push(result)
     }
   }
 
-  console.log("\nInstall summary:");
+  console.log('\nInstall summary:')
   console.table(
     results.map((result) => ({
       target: result.target,
@@ -108,21 +123,21 @@ export async function runInstall() {
       copy: result.copyStatus,
       sanity: result.sanityStatus,
       destination: result.destination,
-    }))
-  );
+    })),
+  )
 
   if (hasFailures) {
-    console.error("\nFailures:");
+    console.error('\nFailures:')
     for (const result of results) {
-      if (result.sanityStatus === "PASS") {
-        continue;
+      if (result.sanityStatus === 'PASS') {
+        continue
       }
-      console.error(`- ${result.target}/${result.skill}: ${result.destination}`);
+      console.error(`- ${result.target}/${result.skill}: ${result.destination}`)
       for (const error of result.errors) {
-        console.error(`  - ${error}`);
+        console.error(`  - ${error}`)
       }
     }
   }
 
-  process.exitCode = hasFailures ? 1 : 0;
+  process.exitCode = hasFailures ? 1 : 0
 }

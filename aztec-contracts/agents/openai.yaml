@@ -1,4 +1,0 @@
-interface:
-  display_name: "Aztec Contracts"
-  short_description: "Noir and Aztec.nr contract authoring workflows"
-  default_prompt: "Use this skill for Noir and Aztec.nr contract design, authoring, and compilation guidance for the pinned devnet release."

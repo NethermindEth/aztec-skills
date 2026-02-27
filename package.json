@@ -11,7 +11,21 @@
     "bin",
     "src"
   ],
+  "scripts": {
+    "format": "biome format --write .",
+    "lint": "biome lint .",
+    "check": "biome check .",
+    "check:fix": "biome check --write .",
+    "typecheck": "tsc -p tsconfig.json --noEmit",
+    "ci": "biome format --write . && biome check . && tsc -p tsconfig.json --noEmit && bun run test",
+    "test": "bash scripts/smoke-installer.sh"
+  },
   "dependencies": {
     "@inquirer/prompts": "^7.0.0"
+  },
+  "devDependencies": {
+    "@biomejs/biome": "^2.4.4",
+    "@types/node": "^25.3.2",
+    "typescript": "^5.9.3"
   }
 }

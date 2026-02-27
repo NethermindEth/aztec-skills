@@ -1,2 +1,6 @@
 local-docs/
 node_modules/
+dist/
+coverage/
+.biome/
+*.tsbuildinfo

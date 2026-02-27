@@ -1,6 +1,7 @@
 {
   "name": "install-aztec-skills",
   "version": "0.1.0",
+  "packageManager": "bun@1.3.9",
   "description": "Interactive installer for Aztec skills in Codex and Claude.",
   "type": "module",
   "bin": {

@@ -1,4 +1,0 @@
-interface:
-  display_name: "Aztec Deployment"
-  short_description: "Aztec app and operator deployment runbooks"
-  default_prompt: "Use this skill for Aztec app-level and operator-level deployment workflows for the pinned devnet release."

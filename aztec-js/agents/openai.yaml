@@ -1,4 +1,0 @@
-interface:
-  display_name: "Aztec.js"
-  short_description: "Aztec.js SDK integration and transaction workflows"
-  default_prompt: "Use this skill for Aztec.js SDK usage, account flows, transaction execution, and deployment interactions on pinned devnet."

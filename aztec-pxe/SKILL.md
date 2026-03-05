@@ -84,7 +84,7 @@ const pxe = await createPXE(node, getPXEConfig(), {
 
 ## Core Workflows
 
-### 1. Boot PXE and Anchor State
+### 1. Boot PXE and Anchor State 
 
 - Build node client and wait for JSON-RPC readiness.
 - Create PXE via `createPXE(...)` from `@aztec/pxe/server` or `@aztec/pxe/client/lazy`.

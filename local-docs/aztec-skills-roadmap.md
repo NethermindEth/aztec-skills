@@ -14,7 +14,7 @@ Goal: expand practical coverage for Aztec developers while avoiding overlap with
 
 ## Priority 1: Add Next (developer-facing)
 
-### 1. `aztec-pxe`
+### 1. `aztec-pxe` **COMPLETED**
 Status:
 - Implemented on March 6, 2026.
 - Skill path: `/home/ametel/source/aztec-skills/aztec-pxe`

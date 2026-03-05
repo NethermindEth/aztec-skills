@@ -34,10 +34,11 @@ After copying, the installer validates each installed skill and prints an instal
 
 ## Skills
 
-This repository currently ships 5 Aztec skills:
+This repository currently ships 6 Aztec skills:
 - `aztec-contracts`: contract authoring and maintenance in Noir/Aztec.nr (storage, functions, authwit, compile/test/codegen workflows).
 - `aztec-deployment`: deployment workflows for local network and devnet, fee/payment setup, registration, and verification.
 - `aztec-js`: TypeScript/Aztec.js app flows (connectivity, accounts, deploy/call/send/simulate, fees, authwit, event reads).
+- `aztec-pxe`: direct PXE operational workflows (private execution lifecycle, note sync/discovery, tagging, private events, and oracle/debug checks).
 - `aztec-wallet-sdk`: wallet connectivity and provider integration with `@aztec/wallet-sdk` (discovery, secure channels, extension handlers, encrypted messaging, and BaseWallet workflows).
 - `aztec-testing`: Noir `TestEnvironment` testing and TypeScript integration testing workflows.
 

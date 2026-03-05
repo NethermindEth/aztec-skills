@@ -8,6 +8,7 @@ SKILLS=(
   "aztec-contracts"
   "aztec-deployment"
   "aztec-js"
+  "aztec-pxe"
   "aztec-wallet-sdk"
   "aztec-testing"
 )

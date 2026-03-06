@@ -15,7 +15,7 @@ npx install-aztec-skills@devnet
 Or pin the exact release:
 
 ```bash
-npx install-aztec-skills@4.0.0-devnet.2-patch.1-v0.1.1
+npx install-aztec-skills@4.0.0-devnet.2-patch.1-v0.2.0
 ```
 
 The installer prompts you to:

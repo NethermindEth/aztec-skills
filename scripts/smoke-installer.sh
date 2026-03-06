@@ -14,12 +14,13 @@ SKILLS=(
   "aztec-contracts"
   "aztec-deployment"
   "aztec-js"
+  "aztec-accounts"
   "aztec-pxe"
   "aztec-wallet-sdk"
   "aztec-testing"
 )
 
-SELECTIONS='{"targets":["codex","claude"],"skills":["aztec-contracts","aztec-deployment","aztec-js","aztec-pxe","aztec-wallet-sdk","aztec-testing"],"scopes":{"codex":"project","claude":"user"}}'
+SELECTIONS='{"targets":["codex","claude"],"skills":["aztec-contracts","aztec-deployment","aztec-js","aztec-accounts","aztec-pxe","aztec-wallet-sdk","aztec-testing"],"scopes":{"codex":"project","claude":"user"}}'
 
 echo "Running installer smoke test in temporary directories..."
 (
@@ -45,6 +46,7 @@ declare -A SCRIPT_CHECKS=(
   ["aztec-contracts"]="scripts/build_contract.sh"
   ["aztec-deployment"]="scripts/preflight_deploy.sh"
   ["aztec-js"]="scripts/preflight_aztec_js.sh"
+  ["aztec-accounts"]="scripts/preflight_aztec_accounts.sh"
   ["aztec-pxe"]="scripts/preflight_pxe.sh"
   ["aztec-wallet-sdk"]="scripts/preflight_wallet_sdk.sh"
   ["aztec-testing"]="scripts/preflight_aztec_testing.sh"

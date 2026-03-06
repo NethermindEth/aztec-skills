@@ -33,7 +33,11 @@ Primary source anchors:
 - `/home/ametel/source/aztec-packages/yarn-project/pxe/README.md`
 - `/home/ametel/source/aztec-packages/yarn-project/pxe/src`
 
-### 2. `aztec-accounts`
+### 2. `aztec-accounts` **COMPLETED**
+Status:
+- Implemented on March 6, 2026.
+- Skill path: `/home/ametel/source/aztec-skills/aztec-accounts`
+
 Scope:
 - Account flavors (Schnorr, ECDSA, SingleKey)
 - Account abstraction entrypoints and transaction routing

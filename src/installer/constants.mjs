@@ -10,6 +10,7 @@ const SKILL_NAMES = [
   'aztec-contracts',
   'aztec-deployment',
   'aztec-js',
+  'aztec-accounts',
   'aztec-pxe',
   'aztec-wallet-sdk',
   'aztec-testing',

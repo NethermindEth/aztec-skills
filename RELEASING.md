@@ -59,22 +59,22 @@ Important:
 
 ## Current Release Example
 
-For version `4.1.0-rc.1-v0.1.0`:
+For version `4.1.0-rc.1-v0.2.0`:
 
 ```bash
 git add package.json README.md RELEASING.md
-git commit -m "chore(release): bump version to 4.1.0-rc.1-v0.1.0"
+git commit -m "chore(release): bump version to 4.1.0-rc.1-v0.2.0"
 
-git tag v4.1.0-rc.1-v0.1.0
+git tag v4.1.0-rc.1-v0.2.0
 git push origin main
-git push origin v4.1.0-rc.1-v0.1.0
+git push origin v4.1.0-rc.1-v0.2.0
 
 npm publish --tag devnet
 npm dist-tag ls install-aztec-skills
 npm view install-aztec-skills dist-tags --json --registry=https://registry.npmjs.org/
 
 # If this release should also become `latest`
-npm dist-tag add install-aztec-skills@4.1.0-rc.1-v0.1.0 latest
+npm dist-tag add install-aztec-skills@4.1.0-rc.1-v0.2.0 latest
 npm dist-tag ls install-aztec-skills
 npm view install-aztec-skills dist-tags --json --registry=https://registry.npmjs.org/
 ```

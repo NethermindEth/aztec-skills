@@ -34,11 +34,28 @@ git push origin v<version>
 npm publish --tag devnet
 ```
 
-7. Verify the published version and dist-tags:
+7. Verify the published dist-tags:
 
 ```bash
-npm view install-aztec-skills version dist-tags --json
+npm dist-tag ls install-aztec-skills
+npm view install-aztec-skills dist-tags --json --registry=https://registry.npmjs.org/
 ```
+
+8. If you want `latest` to point at the version you just published, update the dist-tag instead of publishing the same version again:
+
+```bash
+npm dist-tag add install-aztec-skills@<version> latest
+npm dist-tag ls install-aztec-skills
+npm view install-aztec-skills dist-tags --json --registry=https://registry.npmjs.org/
+```
+
+Important:
+
+- Do not run `npm publish --tag latest` for a version that was already published with `--tag devnet`.
+- npm forbids overwriting an existing published version and will return `E403`.
+- Use `npm dist-tag add ... latest` to promote an existing published version to the `latest` tag.
+- `npm view install-aztec-skills version dist-tags --json` is a poor verifier for tag promotion because the top-level `version` field does not tell you which release `latest` points to.
+- Right after changing a dist-tag, npm read APIs can lag briefly. If the write succeeded but the read still shows old data, retry the read after a short delay.
 
 ## Current Release Example
 
@@ -53,5 +70,11 @@ git push origin main
 git push origin v4.1.0-rc.1-v0.1.0
 
 npm publish --tag devnet
-npm view install-aztec-skills version dist-tags --json
+npm dist-tag ls install-aztec-skills
+npm view install-aztec-skills dist-tags --json --registry=https://registry.npmjs.org/
+
+# If this release should also become `latest`
+npm dist-tag add install-aztec-skills@4.1.0-rc.1-v0.1.0 latest
+npm dist-tag ls install-aztec-skills
+npm view install-aztec-skills dist-tags --json --registry=https://registry.npmjs.org/
 ```

@@ -3,8 +3,8 @@
 ## Scope and Pin
 
 - Skill: `aztec-pxe`
-- Version label: `v4.0.0-devnet.2-patch.1`
-- Commit SHA: `1dbe894364c0d179d2f6443b47887766bbf51343`
+- Version label: `v4.1.0-rc.1`
+- Commit SHA: `77e5b3ca816702e2cee866aec1a0d6ce997e0ea6`
 - Primary source map: `yarn-project/pxe`
 - Upstream repo: `https://github.com/AztecProtocol/aztec-packages`
 
@@ -13,15 +13,15 @@
 ```bash
 git clone https://github.com/AztecProtocol/aztec-packages.git
 cd aztec-packages
-git checkout v4.0.0-devnet.2-patch.1
+git checkout v4.1.0-rc.1
 git status
 git rev-parse HEAD
 ```
 
 Expected:
 
-- `HEAD detached at v4.0.0-devnet.2-patch.1`
-- `1dbe894364c0d179d2f6443b47887766bbf51343`
+- `HEAD detached at v4.1.0-rc.1`
+- `77e5b3ca816702e2cee866aec1a0d6ce997e0ea6`
 
 ## Primary Source Anchors
 
@@ -94,14 +94,14 @@ Execution lifecycle:
 - `proveTx(txRequest, scopes: AztecAddress[])` → `Promise<TxProvingResult>`
   - result: `{ privateExecutionResult, publicInputs: PrivateKernelTailCircuitPublicInputs, chonkProof }`
   - `publicInputs` is non-optional
-- `simulateUtility(call: FunctionCall, opts: SimulateUtilityOpts)` → `Promise<UtilitySimulationResult>`
-  - `opts.authwits?: AuthWitness[]`
-  - `opts.scopes: AccessScopes`
-  - result: `{ result: executionResult, stats: { timings: SimulationTimings, nodeRPCCalls } }`
+- `executeUtility(call: FunctionCall, opts: ExecuteUtilityOpts)` → `Promise<UtilityExecutionResult>`
+- `opts.authwits?: AuthWitness[]`
+- `opts.scopes: AccessScopes`
+- result includes raw field outputs plus optional simulation stats
 
 Events/debug/lifecycle:
 
-- `getPrivateEvents(eventMetadata: EventMetadataDefinition, filter: PrivateEventFilter)` → decoded events
+- `getPrivateEvents(eventSelector: EventSelector, filter: PrivateEventFilter)` → `PackedPrivateEvent[]`
 - `debug.sync()` — force block sync, blocks until complete
 - `debug.getNotes(filter: NotesFilter)` → `Promise<NoteDao[]>` — diagnostics only
   - `NotesFilter`: `{ contractAddress, owner?, storageSlot?, status?, siloedNullifier?, scopes }`

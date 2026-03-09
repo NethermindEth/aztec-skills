@@ -3,8 +3,8 @@
 ## Scope and Pin
 
 - Skill: `aztec-js`
-- Version label: `v4.0.0-devnet.2-patch.1`
-- Commit SHA: `1dbe894364c0d179d2f6443b47887766bbf51343`
+- Version label: `v4.1.0-rc.1`
+- Commit SHA: `77e5b3ca816702e2cee866aec1a0d6ce997e0ea6`
 - Primary source map: `docs/internal_notes/llm_docs_skill_candidates.md`
 - Upstream repo: `https://github.com/AztecProtocol/aztec-packages`
 
@@ -13,15 +13,15 @@
 ```bash
 git clone https://github.com/AztecProtocol/aztec-packages.git
 cd aztec-packages
-git checkout v4.0.0-devnet.2-patch.1
+git checkout v4.1.0-rc.1
 git status
 git rev-parse HEAD
 ```
 
 Expected:
 
-- `HEAD detached at v4.0.0-devnet.2-patch.1`
-- `1dbe894364c0d179d2f6443b47887766bbf51343`
+- `HEAD detached at v4.1.0-rc.1`
+- `77e5b3ca816702e2cee866aec1a0d6ce997e0ea6`
 
 ## Pinned Source Corpus
 
@@ -55,7 +55,7 @@ Referenced examples and tests:
 
 Remote pinned docs root:
 
-- `https://github.com/AztecProtocol/aztec-packages/tree/v4.0.0-devnet.2-patch.1/docs`
+- `https://github.com/AztecProtocol/aztec-packages/tree/v4.1.0-rc.1/docs`
 
 ## Full API Coverage Matrix
 
@@ -76,7 +76,7 @@ This skill covers all packages present in the pinned devnet API corpus.
 Notes:
 
 - API markdown headers may report a generated package version label differing from the repository pin.
-- For this skill, treat the repository pin (`v4.0.0-devnet.2-patch.1`, commit above) as authoritative.
+- For this skill, treat the repository pin (`v4.1.0-rc.1`, commit above) as authoritative.
 
 ## Package-by-Package Usage Map
 
@@ -183,11 +183,10 @@ Use as protocol and utility layers:
 
 - `simulate({ fee: { estimateGas: true, estimatedGasPadding } })`
 - `GasSettings.default(...)` / `GasSettings.from(...)`
-- payment methods:
+- supported payment methods:
 - `SponsoredFeePaymentMethod`
-- `PrivateFeePaymentMethod`
-- `PublicFeePaymentMethod`
 - `FeeJuicePaymentMethodWithClaim`
+- avoid `PrivateFeePaymentMethod` and `PublicFeePaymentMethod` for mainnet-targeted flows; both are deprecated upstream.
 
 ### Authwit
 

@@ -1,6 +1,6 @@
 # PXE Patterns
 
-All patterns assume pin `v4.0.0-devnet.2-patch.1` (`1dbe894364c0d179d2f6443b47887766bbf51343`).
+All patterns assume pin `v4.1.0-rc.1` (`77e5b3ca816702e2cee866aec1a0d6ce997e0ea6`).
 
 ## Pattern 1: Start PXE and Read Anchor Block
 
@@ -29,7 +29,8 @@ import { computePartialAddress } from '@aztec/stdlib/contract';
 // secretKey and partialAddress must be derived from a real account contract.
 // partialAddress is NOT a random Fr — it is computed from the account contract's
 // class hash, salt, and initialization hash via computePartialAddress(...).
-// Use @aztec/accounts helpers (e.g. getSchnorrAccount) to get these values in practice.
+// Use wallet/account helpers such as wallet.createSchnorrAccount(...) or AccountManager.create(...)
+// to derive the real complete address and partial address in practice.
 const secretKey: Fr = accountSecretKey;           // from account derivation
 const partialAddress = computePartialAddress(instance); // from deployed instance
 
@@ -87,12 +88,12 @@ const proving = await pxe.proveTx(txRequest, [aliceAddress]);
 console.log(proving.publicInputs.toFields().length);
 ```
 
-## Pattern 6: Utility Simulation with Authwits
+## Pattern 6: Utility Execution with Authwits
 
 Use for utility entrypoints and sync-state execution paths.
 
 ```typescript
-const utility = await pxe.simulateUtility(functionCall, {
+const utility = await pxe.executeUtility(functionCall, {
   authwits: [authWitness],
   scopes: [aliceAddress, bobAddress],
 });

@@ -1,6 +1,6 @@
 # Aztec.js Patterns
 
-All patterns assume pin `v4.0.0-devnet.2-patch.1` (`1dbe894364c0d179d2f6443b47887766bbf51343`).
+All patterns assume pin `v4.1.0-rc.1` (`77e5b3ca816702e2cee866aec1a0d6ce997e0ea6`).
 
 ## Pattern 1: Connect + Register Local Accounts
 
@@ -104,13 +104,13 @@ const batchReceipt = await batch.send({ from: alice });
 console.log(batchReceipt.blockNumber);
 ```
 
-## Pattern 6: Gas Estimation + Custom Payment Method
+## Pattern 6: Gas Estimation + Supported Payment Method
 
-Use for predictable fee handling.
+Use for predictable fee handling with a supported payment flow.
 
 ```typescript
 import { GasSettings } from "@aztec/stdlib/gas";
-import { PrivateFeePaymentMethod } from "@aztec/aztec.js/fee";
+import { SponsoredFeePaymentMethod } from "@aztec/aztec.js/fee";
 
 const sim = await token.methods.transfer(bob, 50n).simulate({
   from: alice,
@@ -119,7 +119,7 @@ const sim = await token.methods.transfer(bob, 50n).simulate({
 
 const maxFeesPerGas = (await node.getCurrentMinFees()).mul(1.5);
 const gasSettings = GasSettings.default({ maxFeesPerGas });
-const paymentMethod = new PrivateFeePaymentMethod(fpcAddress, alice, wallet, gasSettings);
+const paymentMethod = new SponsoredFeePaymentMethod(fpcAddress);
 
 await token.methods.transfer(bob, 50n).send({
   from: alice,

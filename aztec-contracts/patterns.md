@@ -1,6 +1,6 @@
 # Aztec Contract Patterns
 
-All patterns assume pin `v4.0.0-devnet.2-patch.1` (`1dbe894364c0d179d2f6443b47887766bbf51343`).
+All patterns assume pin `v4.1.0-rc.1` (`77e5b3ca816702e2cee866aec1a0d6ce997e0ea6`).
 
 ## Pattern 1: Minimal Stateful Contract
 
@@ -125,7 +125,7 @@ pub unconstrained fn setup(initial_value: Field) -> (TestEnvironment, AztecAddre
 unconstrained fn test_happy_path() {
     let (mut env, contract_address, owner) = setup(42);
     env.call_private(owner, MyContract::at(contract_address).set_private_value(7));
-    let value = env.simulate_utility(MyContract::at(contract_address).get_private_value(owner));
+    let value = env.execute_utility(MyContract::at(contract_address).get_private_value(owner));
     assert_eq(value, 7);
 }
 ```

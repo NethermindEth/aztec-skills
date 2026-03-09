@@ -2,10 +2,10 @@
 name: aztec-pxe
 description: Use this skill when implementing or debugging direct PXE workflows in TypeScript, including private execution lifecycle, note discovery/synchronization, sender/recipient tagging, private events, scopes, and oracle/debug checks.
 license: Proprietary. LICENSE.txt has complete terms
-compatibility: Pinned to aztec-packages v4.0.0-devnet.2-patch.1 (commit 1dbe894364c0d179d2f6443b47887766bbf51343).
+compatibility: Pinned to aztec-packages v4.1.0-rc.1 (commit 77e5b3ca816702e2cee866aec1a0d6ce997e0ea6).
 metadata:
-  version_label: v4.0.0-devnet.2-patch.1
-  commit_sha: 1dbe894364c0d179d2f6443b47887766bbf51343
+  version_label: v4.1.0-rc.1
+  commit_sha: 77e5b3ca816702e2cee866aec1a0d6ce997e0ea6
   source_map: aztec-packages/yarn-project/pxe
 ---
 
@@ -17,7 +17,7 @@ Use this skill for direct `@aztec/pxe` work.
 
 Primary scope:
 
-- private execution lifecycle (`simulateTx`, `profileTx`, `proveTx`, `simulateUtility`)
+- private execution lifecycle (`simulateTx`, `profileTx`, `proveTx`, `executeUtility`)
 - note discovery/synchronization behavior and scope control
 - sender/recipient tagging workflows
 - private event retrieval and filter handling
@@ -34,8 +34,8 @@ Out of scope:
 Use the upstream repository and pin:
 
 - Repo: `https://github.com/AztecProtocol/aztec-packages`
-- Tag: `v4.0.0-devnet.2-patch.1`
-- Commit: `1dbe894364c0d179d2f6443b47887766bbf51343`
+- Tag: `v4.1.0-rc.1`
+- Commit: `77e5b3ca816702e2cee866aec1a0d6ce997e0ea6`
 - Source root: `yarn-project/pxe`
 
 Checkout example:
@@ -43,11 +43,11 @@ Checkout example:
 ```bash
 git clone https://github.com/AztecProtocol/aztec-packages.git
 cd aztec-packages
-git checkout v4.0.0-devnet.2-patch.1
+git checkout v4.1.0-rc.1
 git status
 ```
 
-Expected status includes `HEAD detached at v4.0.0-devnet.2-patch.1`.
+Expected status includes `HEAD detached at v4.1.0-rc.1`.
 
 ## Operating Rules
 
@@ -105,7 +105,7 @@ const pxe = await createPXE(node, getPXEConfig(), {
   - `profileMode` values: `'full'` | `'execution-steps'` | `'gates'`.
 - `proveTx(txRequest, scopes)` only after simulation correctness is confirmed.
   - Returns `TxProvingResult`; `publicInputs` is non-optional on the result.
-- `simulateUtility(functionCall, { authwits, scopes })` for utility paths and sync-state calls.
+- `executeUtility(functionCall, { authwits, scopes })` for utility paths and sync-state calls.
 
 ### 4. Note Discovery and Synchronization
 

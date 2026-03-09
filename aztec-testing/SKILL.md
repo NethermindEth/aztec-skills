@@ -2,10 +2,10 @@
 name: aztec-testing
 description: Use this skill when testing Aztec smart contracts, including Noir tests with TestEnvironment and TypeScript integration tests with Aztec.js on local-network/devnet-like setups.
 license: Proprietary. LICENSE.txt has complete terms
-compatibility: Pinned to aztec-packages v4.0.0-devnet.2-patch.1 (commit 1dbe894364c0d179d2f6443b47887766bbf51343).
+compatibility: Pinned to aztec-packages v4.1.0-rc.1 (commit 77e5b3ca816702e2cee866aec1a0d6ce997e0ea6).
 metadata:
-  version_label: v4.0.0-devnet.2-patch.1
-  commit_sha: 1dbe894364c0d179d2f6443b47887766bbf51343
+  version_label: v4.1.0-rc.1
+  commit_sha: 77e5b3ca816702e2cee866aec1a0d6ce997e0ea6
   source_map: aztec-packages/docs/internal_notes/llm_docs_skill_candidates.md
 ---
 
@@ -32,19 +32,19 @@ Out of scope:
 Use the upstream repository and pin:
 
 - Repo: `https://github.com/AztecProtocol/aztec-packages`
-- Tag: `v4.0.0-devnet.2-patch.1`
-- Commit: `1dbe894364c0d179d2f6443b47887766bbf51343`
+- Tag: `v4.1.0-rc.1`
+- Commit: `77e5b3ca816702e2cee866aec1a0d6ce997e0ea6`
 
 Checkout example:
 
 ```bash
 git clone https://github.com/AztecProtocol/aztec-packages.git
 cd aztec-packages
-git checkout v4.0.0-devnet.2-patch.1
+git checkout v4.1.0-rc.1
 git status
 ```
 
-Expected status includes `HEAD detached at v4.0.0-devnet.2-patch.1`.
+Expected status includes `HEAD detached at v4.1.0-rc.1`.
 
 ## Operating Rules
 
@@ -116,7 +116,7 @@ Use the right call primitive for each assertion:
 - `env.call_private(...)` for private state transitions
 - `env.call_public(...)` for public state transitions
 - `env.view_private(...)`/`env.view_public(...)` for static reads
-- `env.simulate_utility(...)` for unconstrained utility reads
+- `env.execute_utility(...)` for unconstrained utility reads
 
 ### 3. Noir Authwit Tests
 
@@ -171,9 +171,9 @@ Private authwit patterns:
 
 Public authwit patterns:
 
-- register authorization with `wallet.setPublicAuthWit(..., true)`
+- register authorization with `SetPublicAuthwitContractInteraction.create(..., true)` and send it
 - execute delegated action
-- optionally cancel with `wallet.setPublicAuthWit(..., false)`
+- optionally cancel with `SetPublicAuthwitContractInteraction.create(..., false)` and send it
 - assert unauthorized failure after cancellation
 
 ### 9. Governance/Protocol Upgrade Test Scenarios

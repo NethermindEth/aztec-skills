@@ -3,8 +3,8 @@
 ## Scope and Pin
 
 - Skill: `aztec-testing`
-- Version label: `v4.0.0-devnet.2-patch.1`
-- Commit SHA: `1dbe894364c0d179d2f6443b47887766bbf51343`
+- Version label: `v4.1.0-rc.1`
+- Commit SHA: `77e5b3ca816702e2cee866aec1a0d6ce997e0ea6`
 - Primary source map: `docs/internal_notes/llm_docs_skill_candidates.md`
 - Upstream repo: `https://github.com/AztecProtocol/aztec-packages`
 
@@ -13,15 +13,15 @@
 ```bash
 git clone https://github.com/AztecProtocol/aztec-packages.git
 cd aztec-packages
-git checkout v4.0.0-devnet.2-patch.1
+git checkout v4.1.0-rc.1
 git status
 git rev-parse HEAD
 ```
 
 Expected:
 
-- `HEAD detached at v4.0.0-devnet.2-patch.1`
-- `1dbe894364c0d179d2f6443b47887766bbf51343`
+- `HEAD detached at v4.1.0-rc.1`
+- `77e5b3ca816702e2cee866aec1a0d6ce997e0ea6`
 
 ## Pinned Testing Source Corpus
 
@@ -51,7 +51,7 @@ Primary code fanout used by testing docs:
 
 Remote pinned docs root:
 
-- `https://github.com/AztecProtocol/aztec-packages/tree/v4.0.0-devnet.2-patch.1/docs`
+- `https://github.com/AztecProtocol/aztec-packages/tree/v4.1.0-rc.1/docs`
 
 ## TestEnvironment API Map
 
@@ -105,7 +105,7 @@ Source of truth:
 
 - `call_private(from, private_call)`
 - `view_private(from, private_static_call)`
-- `simulate_utility(utility_call)`
+- `execute_utility(utility_call)`
 - `call_public(from, public_call)`
 - `call_public_incognito(from, public_call)`
 - `view_public(public_static_call)`
@@ -139,8 +139,8 @@ Noir authwit constraints reflected by tests:
 TypeScript authwit APIs used in integration tests:
 
 - `wallet.createAuthWit(authorizer, intent)`
-- `wallet.setPublicAuthWit(authorizer, intent, true|false)`
-- `wallet.lookupValidity(authorizer, intent, witness)`
+- `SetPublicAuthwitContractInteraction.create(wallet, authorizer, intent, true|false)`
+- `lookupValidity(wallet, authorizer, intent, witness)`
 - `computeInnerAuthWitHash(...)`
 - `computeInnerAuthWitHashFromAction(...)`
 - `computeAuthWitMessageHash(...)`
@@ -218,9 +218,9 @@ Private:
 
 Public:
 
-1. register authwit in public registry (`setPublicAuthWit(..., true)`)
+1. register authwit in public registry (`SetPublicAuthwitContractInteraction.create(..., true)` then send)
 2. execute delegated call
-3. cancel authwit (`setPublicAuthWit(..., false)`) when needed
+3. cancel authwit (`SetPublicAuthwitContractInteraction.create(..., false)` then send) when needed
 4. assert unauthorized behavior after cancellation
 
 ## Canonical Testing Snippets (Path Index)

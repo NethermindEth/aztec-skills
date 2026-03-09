@@ -3,8 +3,8 @@
 ## Scope and Pin
 
 - Skill: `aztec-accounts`
-- Version label: `v4.0.0-devnet.2-patch.1`
-- Commit SHA: `1dbe894364c0d179d2f6443b47887766bbf51343`
+- Version label: `v4.1.0-rc.1`
+- Commit SHA: `77e5b3ca816702e2cee866aec1a0d6ce997e0ea6`
 - Primary source roots:
   - `yarn-project/accounts`
   - `yarn-project/entrypoints`
@@ -22,15 +22,15 @@
 ```bash
 git clone https://github.com/AztecProtocol/aztec-packages.git
 cd aztec-packages
-git checkout v4.0.0-devnet.2-patch.1
+git checkout v4.1.0-rc.1
 git status
 git rev-parse HEAD
 ```
 
 Expected:
 
-- `HEAD detached at v4.0.0-devnet.2-patch.1`
-- `1dbe894364c0d179d2f6443b47887766bbf51343`
+- `HEAD detached at v4.1.0-rc.1`
+- `77e5b3ca816702e2cee866aec1a0d6ce997e0ea6`
 
 ## Primary Source Anchors
 

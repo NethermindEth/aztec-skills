@@ -52,7 +52,7 @@ if command -v rg >/dev/null 2>&1; then
   echo
   echo "export declaration counts by source file:"
   while IFS= read -r file; do
-    count="$(rg -n '^export ' "$file" | wc -l | tr -d ' ')"
+    count="$( (rg -n '^export ' "$file" || true) | wc -l | tr -d ' ' )"
     rel="${file#$pkg_dir/}"
     printf "  %-60s %s\n" "$rel" "$count"
   done < <(find "$pkg_dir/src" -type f -name '*.ts' | sort)

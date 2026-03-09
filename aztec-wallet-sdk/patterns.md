@@ -1,6 +1,6 @@
 # Aztec Wallet SDK Patterns
 
-All patterns assume pin `v4.0.0-devnet.2-patch.1` (`1dbe894364c0d179d2f6443b47887766bbf51343`).
+All patterns assume pin `v4.1.0-rc.1` (`77e5b3ca816702e2cee866aec1a0d6ce997e0ea6`).
 
 ## Pattern 1: Stream Wallets with Async Iterator
 

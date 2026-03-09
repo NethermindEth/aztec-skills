@@ -57,7 +57,7 @@ fi
 if [[ ! -d "$aztec_nr_path" ]]; then
   echo "Error: aztec-nr path does not exist: $aztec_nr_path" >&2
   echo "Set AZTEC_NR_PATH or pass the third argument explicitly." >&2
-  echo "Expected repository checkout: https://github.com/AztecProtocol/aztec-packages (tag v4.0.0-devnet.2-patch.1)." >&2
+  echo "Expected repository checkout: https://github.com/AztecProtocol/aztec-packages (tag v4.1.0-rc.1)." >&2
   exit 1
 fi
 

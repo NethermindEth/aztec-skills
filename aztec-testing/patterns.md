@@ -1,6 +1,6 @@
 # Aztec Testing Patterns
 
-All patterns assume pin `v4.0.0-devnet.2-patch.1` (`1dbe894364c0d179d2f6443b47887766bbf51343`).
+All patterns assume pin `v4.1.0-rc.1` (`77e5b3ca816702e2cee866aec1a0d6ce997e0ea6`).
 
 ## Pattern 1: Reusable Noir Setup Helper
 
@@ -34,7 +34,7 @@ unconstrained fn test_call_matrix() {
     env.call_private(owner, MyContract::at(contract).set_private_value(7));
     env.call_public(owner, MyContract::at(contract).set_public_value(11));
 
-    let private_value = env.simulate_utility(MyContract::at(contract).get_private_value(owner));
+    let private_value = env.execute_utility(MyContract::at(contract).get_private_value(owner));
     let public_value = env.view_public(MyContract::at(contract).get_public_value());
 
     assert_eq(private_value, 7);
@@ -64,7 +64,7 @@ unconstrained fn private_delegate_happy_path() {
     add_private_authwit_from_call(env, owner, spender, delegated);
     env.call_private(spender, delegated);
 
-    assert_eq(env.simulate_utility(Token::at(token).balance_of_private(spender)), 100);
+    assert_eq(env.execute_utility(Token::at(token).balance_of_private(spender)), 100);
 }
 ```
 

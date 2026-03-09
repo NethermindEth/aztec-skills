@@ -3,8 +3,8 @@
 ## Scope and Pin
 
 - Skill: `aztec-contracts`
-- Version label: `v4.0.0-devnet.2-patch.1`
-- Commit SHA: `1dbe894364c0d179d2f6443b47887766bbf51343`
+- Version label: `v4.1.0-rc.1`
+- Commit SHA: `77e5b3ca816702e2cee866aec1a0d6ce997e0ea6`
 - Primary source map: `docs/internal_notes/llm_docs_skill_candidates.md`
 - Upstream repo: `https://github.com/AztecProtocol/aztec-packages`
 
@@ -13,14 +13,14 @@
 ```bash
 git clone https://github.com/AztecProtocol/aztec-packages.git
 cd aztec-packages
-git checkout v4.0.0-devnet.2-patch.1
+git checkout v4.1.0-rc.1
 git status
 ```
 
 Expected state:
 
-- `HEAD detached at v4.0.0-devnet.2-patch.1`
-- `git rev-parse HEAD` equals `1dbe894364c0d179d2f6443b47887766bbf51343`
+- `HEAD detached at v4.1.0-rc.1`
+- `git rev-parse HEAD` equals `77e5b3ca816702e2cee866aec1a0d6ce997e0ea6`
 
 ## Pinned Source Corpus
 
@@ -49,8 +49,8 @@ Referenced code fanout:
 
 For generated corpora/chunks derived from this skill, include:
 
-- `version_label: v4.0.0-devnet.2-patch.1`
-- `commit_sha: 1dbe894364c0d179d2f6443b47887766bbf51343`
+- `version_label: v4.1.0-rc.1`
+- `commit_sha: 77e5b3ca816702e2cee866aec1a0d6ce997e0ea6`
 - `source_path`
 - `skill_name`
 
@@ -65,8 +65,8 @@ Exclude:
 
 Pinned environment:
 
-- Aztec packages commit: `1dbe894364c0d179d2f6443b47887766bbf51343`
-- Release label: `v4.0.0-devnet.2-patch.1`
+- Aztec packages commit: `77e5b3ca816702e2cee866aec1a0d6ce997e0ea6`
+- Release label: `v4.1.0-rc.1`
 
 Core commands:
 
@@ -200,7 +200,7 @@ Invocation helpers:
 - `env.call_private(...)`
 - `env.call_public(...)`
 - `env.view_public(...)`
-- `env.simulate_utility(...)`
+- `env.execute_utility(...)`
 
 Accounts:
 

@@ -2,10 +2,10 @@
 name: aztec-js
 description: Use this skill when building TypeScript applications with Aztec.js, including node/PXE connectivity, account lifecycle, contract deployment and interaction, transaction/fee handling, authwit authorization, event reads, and test automation.
 license: Proprietary. LICENSE.txt has complete terms
-compatibility: Pinned to aztec-packages v4.0.0-devnet.2-patch.1 (commit 1dbe894364c0d179d2f6443b47887766bbf51343).
+compatibility: Pinned to aztec-packages v4.1.0-rc.1 (commit 77e5b3ca816702e2cee866aec1a0d6ce997e0ea6).
 metadata:
-  version_label: v4.0.0-devnet.2-patch.1
-  commit_sha: 1dbe894364c0d179d2f6443b47887766bbf51343
+  version_label: v4.1.0-rc.1
+  commit_sha: 77e5b3ca816702e2cee866aec1a0d6ce997e0ea6
   source_map: aztec-packages/docs/internal_notes/llm_docs_skill_candidates.md
 ---
 
@@ -36,19 +36,19 @@ Out of scope:
 Use the upstream repository and pin:
 
 - Repo: `https://github.com/AztecProtocol/aztec-packages`
-- Tag: `v4.0.0-devnet.2-patch.1`
-- Commit: `1dbe894364c0d179d2f6443b47887766bbf51343`
+- Tag: `v4.1.0-rc.1`
+- Commit: `77e5b3ca816702e2cee866aec1a0d6ce997e0ea6`
 
 Checkout example:
 
 ```bash
 git clone https://github.com/AztecProtocol/aztec-packages.git
 cd aztec-packages
-git checkout v4.0.0-devnet.2-patch.1
+git checkout v4.1.0-rc.1
 git status
 ```
 
-Expected status includes `HEAD detached at v4.0.0-devnet.2-patch.1`.
+Expected status includes `HEAD detached at v4.1.0-rc.1`.
 
 ## Operating Rules
 
@@ -126,11 +126,10 @@ const wallet = await EmbeddedWallet.create(node);
 
 - Default method: account pays with Fee Juice.
 - Estimate gas with `simulate({ fee: { estimateGas: true } })`.
-- Use payment-method classes for non-default payment:
+- Use payment-method classes for supported non-default payment:
 - `SponsoredFeePaymentMethod`
-- `PrivateFeePaymentMethod`
-- `PublicFeePaymentMethod`
 - `FeeJuicePaymentMethodWithClaim`
+- Avoid `PrivateFeePaymentMethod` and `PublicFeePaymentMethod` for mainnet-targeted flows; they are deprecated upstream.
 - Set explicit gas settings when reliability matters.
 
 ### 7. Authwit

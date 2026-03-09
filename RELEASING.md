@@ -42,15 +42,15 @@ npm view install-aztec-skills version dist-tags --json
 
 ## Current Release Example
 
-For version `4.0.0-devnet.2-patch.1-v0.2.0`:
+For version `4.1.0-rc.1-v0.1.0`:
 
 ```bash
 git add package.json README.md RELEASING.md
-git commit -m "chore(release): bump version to 4.0.0-devnet.2-patch.1-v0.2.0"
+git commit -m "chore(release): bump version to 4.1.0-rc.1-v0.1.0"
 
-git tag v4.0.0-devnet.2-patch.1-v0.2.0
+git tag v4.1.0-rc.1-v0.1.0
 git push origin main
-git push origin v4.0.0-devnet.2-patch.1-v0.2.0
+git push origin v4.1.0-rc.1-v0.1.0
 
 npm publish --tag devnet
 npm view install-aztec-skills version dist-tags --json

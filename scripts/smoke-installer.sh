@@ -30,6 +30,19 @@ echo "Running installer smoke test in temporary directories..."
     node "$REPO_ROOT/bin/install-aztec-skills.mjs"
 )
 
+RELEASES_JSON='{"versions":["4.0.0-devnet.2-patch.1-v0.2.0","4.1.0-rc.1-v0.2.0"],"dist-tags":{"latest":"4.1.0-rc.1-v0.2.0","devnet":"4.0.0-devnet.2-patch.1-v0.2.0"}}'
+LIST_OUTPUT="$(INSTALL_AZTEC_SKILLS_RELEASES_JSON="$RELEASES_JSON" node "$REPO_ROOT/bin/install-aztec-skills.mjs" list)"
+
+if ! grep -Fq "Available install-aztec-skills releases to install:" <<< "$LIST_OUTPUT"; then
+  echo "FAIL: List command did not print the expected header"
+  exit 1
+fi
+
+if ! grep -Fq "4.1.0-rc.1-v0.2.0" <<< "$LIST_OUTPUT"; then
+  echo "FAIL: List command did not print the expected release version"
+  exit 1
+fi
+
 for skill in "${SKILLS[@]}"; do
   if [[ ! -f "$WORK_DIR/.agents/skills/$skill/SKILL.md" ]]; then
     echo "FAIL: Missing Codex install SKILL.md for $skill"

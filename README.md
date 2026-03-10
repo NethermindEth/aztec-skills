@@ -24,6 +24,12 @@ Or pin the exact release:
 npx install-aztec-skills@4.1.0-rc.1-v0.2.0
 ```
 
+List the published installer releases available to install:
+
+```bash
+npx install-aztec-skills@latest list
+```
+
 The installer prompts you to:
 - Select install target(s): `codex`, `claude`, or both.
 - Select which Aztec skills to install.
@@ -37,6 +43,11 @@ Install locations:
 - `claude` + `user`: `~/.claude/skills`
 
 After copying, the installer validates each installed skill and prints an install summary table with `PASS`/`FAIL` sanity results.
+
+## Commands
+
+- `install-aztec-skills` or `install-aztec-skills install`: run the interactive installer.
+- `install-aztec-skills list`: print published installer versions and dist-tags available to install.
 
 ## Skills
 

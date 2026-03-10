@@ -5,7 +5,9 @@ import { PACKAGE_NAME } from './constants.mjs'
  */
 function assertStringArray(value) {
   if (!Array.isArray(value) || value.some((item) => typeof item !== 'string')) {
-    throw new Error('Invalid releases payload: versions must be a string array.')
+    throw new Error(
+      'Invalid releases payload: versions must be a string array.',
+    )
   }
 }
 
@@ -19,7 +21,9 @@ function assertStringRecord(value) {
 
   for (const entry of Object.values(value)) {
     if (typeof entry !== 'string') {
-      throw new Error('Invalid releases payload: dist-tags values must be strings.')
+      throw new Error(
+        'Invalid releases payload: dist-tags values must be strings.',
+      )
     }
   }
 }

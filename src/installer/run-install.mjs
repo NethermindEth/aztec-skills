@@ -10,6 +10,7 @@ import { checkInstalledSkill } from './sanity-check.mjs'
 
 /**
  * @typedef {'replace' | 'skip' | 'abort'} OverwritePolicy
+ * @typedef {'replace' | 'replace-all' | 'skip' | 'abort'} PromptOverwritePolicy
  * @typedef {{ target: string; scope: string; skill: string; copyStatus: 'copied' | 'skipped' | 'aborted' | 'error'; sanityStatus: 'PASS' | 'FAIL'; destination: string; errors: string[] }} InstallResult
  */
 
@@ -27,13 +28,14 @@ async function pathExists(targetPath) {
 
 /**
  * @param {{ target: string; skillName: string; destPath: string }} options
- * @returns {Promise<OverwritePolicy>}
+ * @returns {Promise<PromptOverwritePolicy>}
  */
 async function promptOverwritePolicy({ target, skillName, destPath }) {
   return select({
     message: `${target}/${skillName} exists at ${destPath}. Choose overwrite policy`,
     choices: [
       { name: 'replace', value: 'replace' },
+      { name: 'replace all', value: 'replace-all' },
       { name: 'skip', value: 'skip' },
       { name: 'abort', value: 'abort' },
     ],
@@ -49,6 +51,8 @@ export async function runInstall() {
   /** @type {InstallResult[]} */
   const results = []
   let hasFailures = false
+  /** @type {OverwritePolicy | null} */
+  let bulkOverwritePolicy = null
 
   for (const target of selections.targets) {
     const targetRoot = resolveTargetRoot({
@@ -64,11 +68,22 @@ export async function runInstall() {
       let overwrite = 'replace'
 
       if (await pathExists(destPath)) {
-        overwrite = await promptOverwritePolicy({
-          target,
-          skillName: skill.name,
-          destPath,
-        })
+        if (bulkOverwritePolicy) {
+          overwrite = bulkOverwritePolicy
+        } else {
+          const promptSelection = await promptOverwritePolicy({
+            target,
+            skillName: skill.name,
+            destPath,
+          })
+
+          if (promptSelection === 'replace-all') {
+            bulkOverwritePolicy = 'replace'
+            overwrite = 'replace'
+          } else {
+            overwrite = promptSelection
+          }
+        }
       }
 
       if (overwrite === 'abort') {

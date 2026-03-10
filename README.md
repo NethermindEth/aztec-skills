@@ -34,7 +34,7 @@ The installer prompts you to:
 - Select install target(s): `codex`, `claude`, or both.
 - Select which Aztec skills to install.
 - Select install scope for each selected target: `project` or `user`.
-- If a destination already exists, choose overwrite policy: `replace`, `skip`, or `abort`.
+- If a destination already exists, choose overwrite policy: `replace`, `replace all`, `skip`, or `abort`.
 
 Install locations:
 - `codex` + `project`: `.agents/skills`

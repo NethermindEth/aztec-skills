@@ -1,6 +1,6 @@
 # Aztec Deployment Patterns
 
-All patterns assume pin `v4.1.0-rc.1` (`77e5b3ca816702e2cee866aec1a0d6ce997e0ea6`).
+All patterns assume pin `v4.1.0-rc.2` (`9598e7eff941a151aeff4cf4264327283db39a88`).
 
 ## Pattern 1: Local Network CLI Deployment
 

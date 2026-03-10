@@ -3,8 +3,8 @@
 ## Scope and Pin
 
 - Skill: `aztec-wallet-sdk`
-- Version label: `v4.1.0-rc.1`
-- Commit SHA: `77e5b3ca816702e2cee866aec1a0d6ce997e0ea6`
+- Version label: `v4.1.0-rc.2`
+- Commit SHA: `9598e7eff941a151aeff4cf4264327283db39a88`
 - Primary source map: `yarn-project/wallet-sdk`
 - Upstream repo: `https://github.com/AztecProtocol/aztec-packages`
 
@@ -13,15 +13,15 @@
 ```bash
 git clone https://github.com/AztecProtocol/aztec-packages.git
 cd aztec-packages
-git checkout v4.1.0-rc.1
+git checkout v4.1.0-rc.2
 git status
 git rev-parse HEAD
 ```
 
 Expected:
 
-- `HEAD detached at v4.1.0-rc.1`
-- `77e5b3ca816702e2cee866aec1a0d6ce997e0ea6`
+- `HEAD detached at v4.1.0-rc.2`
+- `9598e7eff941a151aeff4cf4264327283db39a88`
 
 ## Pinned Source Corpus
 

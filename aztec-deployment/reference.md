@@ -3,8 +3,8 @@
 ## Scope and Pin
 
 - Skill: `aztec-deployment`
-- Version label: `v4.1.0-rc.1`
-- Commit SHA: `77e5b3ca816702e2cee866aec1a0d6ce997e0ea6`
+- Version label: `v4.1.0-rc.2`
+- Commit SHA: `9598e7eff941a151aeff4cf4264327283db39a88`
 - Primary source map: `docs/internal_notes/llm_docs_skill_candidates.md`
 - Upstream repo: `https://github.com/AztecProtocol/aztec-packages`
 
@@ -13,15 +13,15 @@
 ```bash
 git clone https://github.com/AztecProtocol/aztec-packages.git
 cd aztec-packages
-git checkout v4.1.0-rc.1
+git checkout v4.1.0-rc.2
 git status
 git rev-parse HEAD
 ```
 
 Expected:
 
-- `HEAD detached at v4.1.0-rc.1`
-- `77e5b3ca816702e2cee866aec1a0d6ce997e0ea6`
+- `HEAD detached at v4.1.0-rc.2`
+- `9598e7eff941a151aeff4cf4264327283db39a88`
 
 ## Deployment-Only Source Corpus
 
@@ -222,5 +222,5 @@ Address mismatch when registering external contract:
 
 - Keep this skill self-contained for common deploy flows.
 - Use remote references only when needed:
-- `https://github.com/AztecProtocol/aztec-packages/tree/v4.1.0-rc.1`
+- `https://github.com/AztecProtocol/aztec-packages/tree/v4.1.0-rc.2`
 - Avoid local machine absolute paths.

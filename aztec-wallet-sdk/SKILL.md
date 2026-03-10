@@ -2,10 +2,10 @@
 name: aztec-wallet-sdk
 description: Use this skill when integrating Aztec wallet connectivity with @aztec/wallet-sdk, including discovery/session flows, secure-channel key exchange, extension handlers, encrypted messaging, and BaseWallet implementations.
 license: Proprietary. LICENSE.txt has complete terms
-compatibility: Pinned to aztec-packages v4.1.0-rc.1 (commit 77e5b3ca816702e2cee866aec1a0d6ce997e0ea6).
+compatibility: Pinned to aztec-packages v4.1.0-rc.2 (commit 9598e7eff941a151aeff4cf4264327283db39a88).
 metadata:
-  version_label: v4.1.0-rc.1
-  commit_sha: 77e5b3ca816702e2cee866aec1a0d6ce997e0ea6
+  version_label: v4.1.0-rc.2
+  commit_sha: 9598e7eff941a151aeff4cf4264327283db39a88
   source_map: aztec-packages/yarn-project/wallet-sdk
 ---
 
@@ -35,8 +35,8 @@ Out of scope:
 Use the upstream repository and pin:
 
 - Repo: `https://github.com/AztecProtocol/aztec-packages`
-- Tag: `v4.1.0-rc.1`
-- Commit: `77e5b3ca816702e2cee866aec1a0d6ce997e0ea6`
+- Tag: `v4.1.0-rc.2`
+- Commit: `9598e7eff941a151aeff4cf4264327283db39a88`
 - Source root: `yarn-project/wallet-sdk`
 
 Checkout example:
@@ -44,11 +44,11 @@ Checkout example:
 ```bash
 git clone https://github.com/AztecProtocol/aztec-packages.git
 cd aztec-packages
-git checkout v4.1.0-rc.1
+git checkout v4.1.0-rc.2
 git status
 ```
 
-Expected status includes `HEAD detached at v4.1.0-rc.1`.
+Expected status includes `HEAD detached at v4.1.0-rc.2`.
 
 ## Operating Rules
 

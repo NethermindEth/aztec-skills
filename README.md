@@ -9,6 +9,12 @@ It installs one or more Aztec skills into Codex and/or Claude skill directories,
 Run with `npx` (recommended):
 
 ```bash
+npx install-aztec-skills@latest
+```
+
+or 
+
+```bash
 npx install-aztec-skills@devnet
 ```
 

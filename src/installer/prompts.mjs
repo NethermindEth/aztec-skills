@@ -4,6 +4,7 @@ import { SKILLS } from './constants.mjs'
 const VALID_TARGETS = new Set(['codex', 'claude'])
 const VALID_SCOPES = new Set(['project', 'user'])
 const VALID_SKILLS = new Set(SKILLS.map((skill) => skill.name))
+const SELECT_ALL_SKILLS = '__select_all_skills__'
 const INSTALLER_BANNER = `
   █████╗  ███████╗ ████████╗ ███████╗  ██████╗
  ██╔══██╗ ╚══███╔╝ ╚══██╔══╝ ██╔════╝ ██╔════╝
@@ -46,16 +47,25 @@ export async function promptTargets() {
  * @returns {Promise<string[]>}
  */
 export async function promptSkills() {
-  return checkbox({
+  const selectedSkills = await checkbox({
     message: 'Select skills to install',
-    choices: SKILLS.map((skill) => ({
-      name: skill.name,
-      value: skill.name,
-    })),
+    choices: [
+      { name: 'select all', value: SELECT_ALL_SKILLS },
+      ...SKILLS.map((skill) => ({
+        name: skill.name,
+        value: skill.name,
+      })),
+    ],
     validate(value) {
       return value.length > 0 || 'Select at least one skill.'
     },
   })
+
+  if (selectedSkills.includes(SELECT_ALL_SKILLS)) {
+    return SKILLS.map((skill) => skill.name)
+  }
+
+  return selectedSkills
 }
 
 /**

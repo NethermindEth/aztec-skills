@@ -1,6 +1,6 @@
 # Aztec Testing Patterns
 
-All patterns assume pin `v4.1.0-rc.2` (`9598e7eff941a151aeff4cf4264327283db39a88`).
+All patterns assume pin `v4.1.3` (`e696cf677877d88626834b117a19b7db06bef217`).
 
 ## Pattern 1: Reusable Noir Setup Helper
 
@@ -147,13 +147,13 @@ Use this as the default contract integration test shape.
 ```typescript
 import { TokenContract } from "@aztec/noir-contracts.js/Token";
 
-const token = await TokenContract.deploy(wallet, alice, "TestToken", "TST", 18).send({
+const { contract: token } = await TokenContract.deploy(wallet, alice, "TestToken", "TST", 18).send({
   from: alice,
 });
 
 await token.methods.mint_to_public(alice, 1000n).send({ from: alice });
 
-const balance = await token.methods.balance_of_public(alice).simulate({ from: alice });
+const { result: balance } = await token.methods.balance_of_public(alice).simulate({ from: alice });
 expect(balance).toBe(1000n);
 ```
 
@@ -181,7 +181,7 @@ Use this for cheap negative-path assertions.
 
 ```typescript
 it("reverts when transferring more than balance", async () => {
-  const balance = await token.methods.balance_of_public(alice).simulate({ from: alice });
+  const { result: balance } = await token.methods.balance_of_public(alice).simulate({ from: alice });
 
   await expect(
     token.methods.transfer_in_public(alice, bob, balance + 1n, 0).simulate({ from: alice }),

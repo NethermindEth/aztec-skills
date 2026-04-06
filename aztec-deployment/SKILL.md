@@ -2,10 +2,10 @@
 name: aztec-deployment
 description: Use this skill when deploying Aztec smart contracts (not authoring them), including local-network and devnet deployment via aztec-wallet/Aztec.js, fee-payment setup, deterministic addresses, deployment verification, and contract registration workflows.
 license: Proprietary. LICENSE.txt has complete terms
-compatibility: Pinned to aztec-packages v4.1.0-rc.2 (commit 9598e7eff941a151aeff4cf4264327283db39a88).
+compatibility: Pinned to aztec-packages v4.1.3 (commit e696cf677877d88626834b117a19b7db06bef217).
 metadata:
-  version_label: v4.1.0-rc.2
-  commit_sha: 9598e7eff941a151aeff4cf4264327283db39a88
+  version_label: v4.1.3
+  commit_sha: e696cf677877d88626834b117a19b7db06bef217
   source_map: aztec-packages/docs/internal_notes/llm_docs_skill_candidates.md
 ---
 
@@ -32,19 +32,19 @@ Out of scope:
 Use the upstream repository and pin:
 
 - Repo: `https://github.com/AztecProtocol/aztec-packages`
-- Tag: `v4.1.0-rc.2`
-- Commit: `9598e7eff941a151aeff4cf4264327283db39a88`
+- Tag: `v4.1.3`
+- Commit: `e696cf677877d88626834b117a19b7db06bef217`
 
 Checkout example:
 
 ```bash
 git clone https://github.com/AztecProtocol/aztec-packages.git
 cd aztec-packages
-git checkout v4.1.0-rc.2
+git checkout v4.1.3
 git status
 ```
 
-Expected status includes `HEAD detached at v4.1.0-rc.2`.
+Expected status includes `HEAD detached at v4.1.3`.
 
 ## Operating Rules
 
@@ -158,7 +158,7 @@ Minimal safe sequence:
 Canonical pattern:
 
 ```typescript
-const contract = await MyContract.deploy(wallet, ...ctorArgs).send({ from });
+const { contract } = await MyContract.deploy(wallet, ...ctorArgs).send({ from });
 ```
 
 Deployment options in `send(...)` include:
@@ -169,6 +169,8 @@ Deployment options in `send(...)` include:
 - `skipInstancePublication`
 - `skipInitialization`
 - `wait` (including `NO_WAIT`)
+
+Waited deploys return `{ contract, receipt, ... }`. `NO_WAIT` deploys return `{ txHash, ... }`.
 
 Advanced:
 

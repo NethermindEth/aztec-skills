@@ -1,6 +1,6 @@
 # Aztec Deployment Patterns
 
-All patterns assume pin `v4.1.0-rc.2` (`9598e7eff941a151aeff4cf4264327283db39a88`).
+All patterns assume pin `v4.1.3` (`e696cf677877d88626834b117a19b7db06bef217`).
 
 ## Pattern 1: Local Network CLI Deployment
 
@@ -76,7 +76,7 @@ Use as default app-side deployment flow.
 ```typescript
 import { TokenContract } from "@aztec/noir-contracts.js/Token";
 
-const token = await TokenContract.deploy(
+const { contract: token } = await TokenContract.deploy(
   wallet,
   ownerAddress,
   "Token",
@@ -93,7 +93,7 @@ Use for custom initializer, no wait, or deterministic address.
 import { Fr } from "@aztec/aztec.js/fields";
 import { NO_WAIT } from "@aztec/aztec.js/contracts";
 
-const txHash = await MyContract.deployWithOpts(
+const { txHash } = await MyContract.deployWithOpts(
   { wallet, method: "public_constructor" },
   ownerAddress,
   42,

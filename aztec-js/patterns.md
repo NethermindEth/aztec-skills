@@ -1,6 +1,6 @@
 # Aztec.js Patterns
 
-All patterns assume pin `v4.1.0-rc.2` (`9598e7eff941a151aeff4cf4264327283db39a88`).
+All patterns assume pin `v4.1.3` (`e696cf677877d88626834b117a19b7db06bef217`).
 
 ## Pattern 1: Connect + Register Local Accounts
 
@@ -52,7 +52,7 @@ Use for production-safe deployment flow.
 import { TokenContract } from "@aztec/noir-contracts.js/Token";
 import { Fr } from "@aztec/aztec.js/fields";
 
-const token = await TokenContract.deploy(wallet, alice, "Token", "TOK", 18).send({
+const { contract: token } = await TokenContract.deploy(wallet, alice, "Token", "TOK", 18).send({
   from: alice,
   contractAddressSalt: Fr.random(),
   universalDeploy: false,
@@ -79,7 +79,7 @@ import { NO_WAIT } from "@aztec/aztec.js/contracts";
 
 await token.methods.transfer(bob, 100n).simulate({ from: alice });
 
-const txHash = await token.methods.transfer(bob, 100n).send({
+const { txHash } = await token.methods.transfer(bob, 100n).send({
   from: alice,
   wait: NO_WAIT,
 });
@@ -100,7 +100,7 @@ const batch = new BatchCall(wallet, [
   token.methods.transfer(bob, 200n),
 ]);
 
-const batchReceipt = await batch.send({ from: alice });
+const { receipt: batchReceipt } = await batch.send({ from: alice });
 console.log(batchReceipt.blockNumber);
 ```
 
@@ -112,7 +112,7 @@ Use for predictable fee handling with a supported payment flow.
 import { GasSettings } from "@aztec/stdlib/gas";
 import { SponsoredFeePaymentMethod } from "@aztec/aztec.js/fee";
 
-const sim = await token.methods.transfer(bob, 50n).simulate({
+const { result: sim } = await token.methods.transfer(bob, 50n).simulate({
   from: alice,
   fee: { estimateGas: true, estimatedGasPadding: 0.2 },
 });
@@ -163,7 +163,7 @@ Use for indexer-lite app reads.
 import { getPublicEvents } from "@aztec/aztec.js/events";
 import type { PrivateEventFilter } from "@aztec/aztec.js/wallet";
 
-const publicEvents = await getPublicEvents(node, TokenContract.events.Transfer, {
+const { events: publicEvents, maxLogsHit } = await getPublicEvents(node, TokenContract.events.Transfer, {
   fromBlock: 1,
   toBlock: 100,
   contractAddress: token.address,
@@ -211,7 +211,7 @@ beforeAll(async () => {
 });
 
 it("simulates before sending", async () => {
-  const result = await contract.methods.balance_of_public(alice).simulate({ from: alice });
+  const { result } = await contract.methods.balance_of_public(alice).simulate({ from: alice });
   expect(result).toBeDefined();
 });
 ```

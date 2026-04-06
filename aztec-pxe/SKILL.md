@@ -2,10 +2,10 @@
 name: aztec-pxe
 description: Use this skill when implementing or debugging direct PXE workflows in TypeScript, including private execution lifecycle, note discovery/synchronization, sender/recipient tagging, private events, scopes, and oracle/debug checks.
 license: Proprietary. LICENSE.txt has complete terms
-compatibility: Pinned to aztec-packages v4.1.0-rc.2 (commit 9598e7eff941a151aeff4cf4264327283db39a88).
+compatibility: Pinned to aztec-packages v4.1.3 (commit e696cf677877d88626834b117a19b7db06bef217).
 metadata:
-  version_label: v4.1.0-rc.2
-  commit_sha: 9598e7eff941a151aeff4cf4264327283db39a88
+  version_label: v4.1.3
+  commit_sha: e696cf677877d88626834b117a19b7db06bef217
   source_map: aztec-packages/yarn-project/pxe
 ---
 
@@ -34,8 +34,8 @@ Out of scope:
 Use the upstream repository and pin:
 
 - Repo: `https://github.com/AztecProtocol/aztec-packages`
-- Tag: `v4.1.0-rc.2`
-- Commit: `9598e7eff941a151aeff4cf4264327283db39a88`
+- Tag: `v4.1.3`
+- Commit: `e696cf677877d88626834b117a19b7db06bef217`
 - Source root: `yarn-project/pxe`
 
 Checkout example:
@@ -43,11 +43,11 @@ Checkout example:
 ```bash
 git clone https://github.com/AztecProtocol/aztec-packages.git
 cd aztec-packages
-git checkout v4.1.0-rc.2
+git checkout v4.1.3
 git status
 ```
 
-Expected status includes `HEAD detached at v4.1.0-rc.2`.
+Expected status includes `HEAD detached at v4.1.3`.
 
 ## Operating Rules
 

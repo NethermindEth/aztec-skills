@@ -1,6 +1,6 @@
 # PXE Patterns
 
-All patterns assume pin `v4.1.0-rc.2` (`9598e7eff941a151aeff4cf4264327283db39a88`).
+All patterns assume pin `v4.1.3` (`e696cf677877d88626834b117a19b7db06bef217`).
 
 ## Pattern 1: Start PXE and Read Anchor Block
 

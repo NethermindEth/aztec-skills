@@ -3,8 +3,8 @@
 ## Scope and Pin
 
 - Skill: `aztec-deployment`
-- Version label: `v4.1.0-rc.2`
-- Commit SHA: `9598e7eff941a151aeff4cf4264327283db39a88`
+- Version label: `v4.1.3`
+- Commit SHA: `e696cf677877d88626834b117a19b7db06bef217`
 - Primary source map: `docs/internal_notes/llm_docs_skill_candidates.md`
 - Upstream repo: `https://github.com/AztecProtocol/aztec-packages`
 
@@ -13,15 +13,15 @@
 ```bash
 git clone https://github.com/AztecProtocol/aztec-packages.git
 cd aztec-packages
-git checkout v4.1.0-rc.2
+git checkout v4.1.3
 git status
 git rev-parse HEAD
 ```
 
 Expected:
 
-- `HEAD detached at v4.1.0-rc.2`
-- `9598e7eff941a151aeff4cf4264327283db39a88`
+- `HEAD detached at v4.1.3`
+- `e696cf677877d88626834b117a19b7db06bef217`
 
 ## Deployment-Only Source Corpus
 
@@ -160,7 +160,7 @@ aztec-wallet deploy --node-url "$NODE_URL" --from accounts:my-wallet --payment m
 
 Common API:
 
-- `MyContract.deploy(wallet, ...ctorArgs).send({ from })`
+- `MyContract.deploy(wallet, ...ctorArgs).send({ from })` — waited deploys return `{ contract, receipt, ... }`
 - `MyContract.deployWithOpts({ wallet, method: "public_constructor" }, ...args).send({ from })`
 
 Deployment `send(...)` options (from `DeployOptions`):
@@ -172,7 +172,7 @@ Deployment `send(...)` options (from `DeployOptions`):
 - `skipClassPublication`
 - `skipInstancePublication`
 - `skipInitialization`
-- `wait` (`NO_WAIT` supported)
+- `wait` (`NO_WAIT` supported — returns `{ txHash, ... }` instead of `{ contract, receipt, ... }`)
 
 Useful patterns:
 
@@ -222,5 +222,5 @@ Address mismatch when registering external contract:
 
 - Keep this skill self-contained for common deploy flows.
 - Use remote references only when needed:
-- `https://github.com/AztecProtocol/aztec-packages/tree/v4.1.0-rc.2`
+- `https://github.com/AztecProtocol/aztec-packages/tree/v4.1.3`
 - Avoid local machine absolute paths.

@@ -2,10 +2,10 @@
 name: aztec-js
 description: Use this skill when building TypeScript applications with Aztec.js, including node/PXE connectivity, account lifecycle, contract deployment and interaction, transaction/fee handling, authwit authorization, event reads, and test automation.
 license: Proprietary. LICENSE.txt has complete terms
-compatibility: Pinned to aztec-packages v4.1.0-rc.2 (commit 9598e7eff941a151aeff4cf4264327283db39a88).
+compatibility: Pinned to aztec-packages v4.1.3 (commit e696cf677877d88626834b117a19b7db06bef217).
 metadata:
-  version_label: v4.1.0-rc.2
-  commit_sha: 9598e7eff941a151aeff4cf4264327283db39a88
+  version_label: v4.1.3
+  commit_sha: e696cf677877d88626834b117a19b7db06bef217
   source_map: aztec-packages/docs/internal_notes/llm_docs_skill_candidates.md
 ---
 
@@ -36,19 +36,19 @@ Out of scope:
 Use the upstream repository and pin:
 
 - Repo: `https://github.com/AztecProtocol/aztec-packages`
-- Tag: `v4.1.0-rc.2`
-- Commit: `9598e7eff941a151aeff4cf4264327283db39a88`
+- Tag: `v4.1.3`
+- Commit: `e696cf677877d88626834b117a19b7db06bef217`
 
 Checkout example:
 
 ```bash
 git clone https://github.com/AztecProtocol/aztec-packages.git
 cd aztec-packages
-git checkout v4.1.0-rc.2
+git checkout v4.1.3
 git status
 ```
 
-Expected status includes `HEAD detached at v4.1.0-rc.2`.
+Expected status includes `HEAD detached at v4.1.3`.
 
 ## Operating Rules
 
@@ -99,7 +99,7 @@ const wallet = await EmbeddedWallet.create(node);
 ### 3. Deploy and Register Contracts (SDK)
 
 - Generate contract TS bindings from compiled artifacts.
-- Deploy with `MyContract.deploy(wallet, ...ctorArgs).send({ from })`.
+- Deploy with `MyContract.deploy(wallet, ...ctorArgs).send({ from })`. Waited deploys return `{ contract, receipt, ... }`.
 - Use deploy options when needed:
 - `contractAddressSalt`, `universalDeploy`
 - `skipClassPublication`, `skipInstancePublication`, `skipInitialization`
@@ -110,15 +110,15 @@ const wallet = await EmbeddedWallet.create(node);
 ### 4. Send Transactions Safely
 
 - Build calls from `contract.methods.<fn>(...)`.
-- Use `.simulate({ from })` for preflight behavior checks.
-- Use `.send({ from, fee?, wait? })` for state changes.
-- For atomic multi-call flows, use `new BatchCall(wallet, [call1, call2, ...])`.
+- Use `.simulate({ from })` for preflight behavior checks; returns `{ result, ... }`.
+- Use `.send({ from, fee?, wait? })` for state changes; waited sends return `{ receipt, ... }`, `NO_WAIT` sends return `{ txHash, ... }`.
+- For atomic multi-call flows, use `new BatchCall(wallet, [call1, call2, ...])`. Waited `BatchCall.send()` follows the same return shape (`{ receipt, ... }`).
 - If using no-wait mode, poll receipt with node APIs.
 
 ### 5. Read Data and Events
 
-- Use `simulate` for typed state reads (private/public/utility).
-- Read public events with `getPublicEvents(node, Contract.events.EventName, filter)`.
+- Use `simulate` for typed state reads (private/public/utility); `.simulate()` returns `{ result, ... }`, not the raw value.
+- Read public events with `getPublicEvents(node, Contract.events.EventName, filter)`. Returns `{ events, maxLogsHit }`.
 - Read private events with `wallet.getPrivateEvents(eventDef, filter)`.
 - Use raw logs only when ABI-level decoding is not required.
 

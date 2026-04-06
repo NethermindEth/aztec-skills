@@ -3,8 +3,8 @@
 ## Scope and Pin
 
 - Skill: `aztec-js`
-- Version label: `v4.1.0-rc.2`
-- Commit SHA: `9598e7eff941a151aeff4cf4264327283db39a88`
+- Version label: `v4.1.3`
+- Commit SHA: `e696cf677877d88626834b117a19b7db06bef217`
 - Primary source map: `docs/internal_notes/llm_docs_skill_candidates.md`
 - Upstream repo: `https://github.com/AztecProtocol/aztec-packages`
 
@@ -13,15 +13,15 @@
 ```bash
 git clone https://github.com/AztecProtocol/aztec-packages.git
 cd aztec-packages
-git checkout v4.1.0-rc.2
+git checkout v4.1.3
 git status
 git rev-parse HEAD
 ```
 
 Expected:
 
-- `HEAD detached at v4.1.0-rc.2`
-- `9598e7eff941a151aeff4cf4264327283db39a88`
+- `HEAD detached at v4.1.3`
+- `e696cf677877d88626834b117a19b7db06bef217`
 
 ## Pinned Source Corpus
 
@@ -55,7 +55,7 @@ Referenced examples and tests:
 
 Remote pinned docs root:
 
-- `https://github.com/AztecProtocol/aztec-packages/tree/v4.1.0-rc.2/docs`
+- `https://github.com/AztecProtocol/aztec-packages/tree/v4.1.3/docs`
 
 ## Full API Coverage Matrix
 
@@ -76,7 +76,7 @@ This skill covers all packages present in the pinned devnet API corpus.
 Notes:
 
 - API markdown headers may report a generated package version label differing from the repository pin.
-- For this skill, treat the repository pin (`v4.1.0-rc.2`, commit above) as authoritative.
+- For this skill, treat the repository pin (`v4.1.3`, commit above) as authoritative.
 
 ## Package-by-Package Usage Map
 
@@ -161,7 +161,7 @@ Use as protocol and utility layers:
 
 ### Contract deployment
 
-- `MyContract.deploy(wallet, ...args).send({ from, ...opts })`
+- `MyContract.deploy(wallet, ...args).send({ from, ...opts })` — waited deploys return `{ contract, receipt, ... }`
 - `MyContract.deployWithOpts({ wallet, method }, ...args).send({ from, ...opts })`
 - `deployMethod.getInstance({ contractAddressSalt })`
 - `deployMethod.register()` for batched deployment+call flows
@@ -169,9 +169,9 @@ Use as protocol and utility layers:
 ### Contract interaction
 
 - `Contract.at(address, artifact, wallet)`
-- `contract.methods.fn(...).simulate({ from, ...opts })`
-- `contract.methods.fn(...).send({ from, fee, wait })`
-- `new BatchCall(wallet, [call1, call2, ...]).send({ from })`
+- `contract.methods.fn(...).simulate({ from, ...opts })` — returns `{ result, ... }`
+- `contract.methods.fn(...).send({ from, fee, wait })` — waited returns `{ receipt, ... }`, `NO_WAIT` returns `{ txHash, ... }`
+- `new BatchCall(wallet, [call1, call2, ...]).send({ from })` — waited returns `{ receipt, ... }`
 
 ### Metadata and registration
 
@@ -196,14 +196,14 @@ Use as protocol and utility layers:
 
 ### Events and logs
 
-- `getPublicEvents(node, EventDef, filter)`
+- `getPublicEvents(node, EventDef, filter)` — returns `{ events, maxLogsHit }`
 - `wallet.getPrivateEvents(EventDef, filter)`
 - `aztecNode.getPublicLogs(filter)` for raw fields
 
 ### Transaction lifecycle
 
-- waited send: `await method.send({ from })`
-- no-wait: `await method.send({ from, wait: NO_WAIT })`
+- waited send: `await method.send({ from })` — returns `{ receipt, ... }`
+- no-wait: `await method.send({ from, wait: NO_WAIT })` — returns `{ txHash, ... }`
 - receipt polling: `node.getTxReceipt(txHash)` or tx wait helpers
 
 ## Complete API Extraction Commands

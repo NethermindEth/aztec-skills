@@ -2,10 +2,10 @@
 name: aztec-testing
 description: Use this skill when testing Aztec smart contracts, including Noir tests with TestEnvironment and TypeScript integration tests with Aztec.js on local-network/devnet-like setups.
 license: Proprietary. LICENSE.txt has complete terms
-compatibility: Pinned to aztec-packages v4.1.0-rc.2 (commit 9598e7eff941a151aeff4cf4264327283db39a88).
+compatibility: Pinned to aztec-packages v4.1.3 (commit e696cf677877d88626834b117a19b7db06bef217).
 metadata:
-  version_label: v4.1.0-rc.2
-  commit_sha: 9598e7eff941a151aeff4cf4264327283db39a88
+  version_label: v4.1.3
+  commit_sha: e696cf677877d88626834b117a19b7db06bef217
   source_map: aztec-packages/docs/internal_notes/llm_docs_skill_candidates.md
 ---
 
@@ -32,19 +32,19 @@ Out of scope:
 Use the upstream repository and pin:
 
 - Repo: `https://github.com/AztecProtocol/aztec-packages`
-- Tag: `v4.1.0-rc.2`
-- Commit: `9598e7eff941a151aeff4cf4264327283db39a88`
+- Tag: `v4.1.3`
+- Commit: `e696cf677877d88626834b117a19b7db06bef217`
 
 Checkout example:
 
 ```bash
 git clone https://github.com/AztecProtocol/aztec-packages.git
 cd aztec-packages
-git checkout v4.1.0-rc.2
+git checkout v4.1.3
 git status
 ```
 
-Expected status includes `HEAD detached at v4.1.0-rc.2`.
+Expected status includes `HEAD detached at v4.1.3`.
 
 ## Operating Rules
 
@@ -52,7 +52,7 @@ Expected status includes `HEAD detached at v4.1.0-rc.2`.
 - Re-run `aztec compile` before `aztec test` after contract changes.
 - Use `create_contract_account()` whenever authwit behavior is under test.
 - Use `create_light_account()` for faster non-authwit tests.
-- In TypeScript integration tests, call `.simulate()` before `.send()` for safety and clearer failure assertions.
+- In TypeScript integration tests, call `.simulate()` before `.send()` for safety and clearer failure assertions. Note that `.simulate()` returns `{ result, ... }` — use the `result` field for reads and assertions.
 - Treat local-network node readiness as mandatory before test execution.
 - Keep tests deterministic:
 - avoid hidden inter-test state coupling

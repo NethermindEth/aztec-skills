@@ -1,6 +1,6 @@
 # Aztec.js Patterns
 
-All patterns assume pin `v4.1.3` (`e696cf677877d88626834b117a19b7db06bef217`).
+All patterns assume pin `v4.2.0` (`f8c89cf4345df6c4ca9e66ea9b738e96070abc5a`).
 
 ## Pattern 1: Connect + Register Local Accounts
 
@@ -25,21 +25,22 @@ const [alice, bob] = await Promise.all(
 
 ## Pattern 2: Create and Deploy a New Account
 
-Use when onboarding a user account.
+Use when onboarding a user account. In v4.2.0 the `AztecAddress.ZERO` sentinel for bypassing the account entrypoint was replaced by `NO_FROM` (imported from `@aztec/aztec.js/account`); self-deployments wrap through `DefaultMultiCallEntrypoint` + `mergeExecutionPayloads` internally so the fee claim and the deployment land in a single private payload.
 
 ```typescript
 import { Fr } from "@aztec/aztec.js/fields";
-import { AztecAddress } from "@aztec/aztec.js/addresses";
+import { NO_FROM } from "@aztec/aztec.js/account";
+import { ContractInitializationStatus } from "@aztec/aztec.js/wallet";
 
 const newAccount = await wallet.createSchnorrAccount(Fr.random(), Fr.random());
 const deployMethod = await newAccount.getDeployMethod();
 
 await deployMethod.send({
-  from: AztecAddress.ZERO,
+  from: NO_FROM,
 });
 
 const metadata = await wallet.getContractMetadata(newAccount.address);
-if (!metadata.isContractInitialized) {
+if (metadata.initializationStatus !== ContractInitializationStatus.INITIALIZED) {
   throw new Error("Account deployment not initialized");
 }
 ```
@@ -51,6 +52,7 @@ Use for production-safe deployment flow.
 ```typescript
 import { TokenContract } from "@aztec/noir-contracts.js/Token";
 import { Fr } from "@aztec/aztec.js/fields";
+import { ContractInitializationStatus } from "@aztec/aztec.js/wallet";
 
 const { contract: token } = await TokenContract.deploy(wallet, alice, "Token", "TOK", 18).send({
   from: alice,
@@ -63,7 +65,7 @@ const classMeta = metadata.instance
   ? await wallet.getContractClassMetadata(metadata.instance.currentContractClassId)
   : undefined;
 
-if (!metadata.isContractInitialized) throw new Error("not initialized");
+if (metadata.initializationStatus !== ContractInitializationStatus.INITIALIZED) throw new Error("not initialized");
 if (!metadata.isContractPublished) throw new Error("instance not published");
 if (classMeta && !classMeta.isContractClassPubliclyRegistered) {
   throw new Error("class not publicly registered");
@@ -118,7 +120,10 @@ const { result: sim } = await token.methods.transfer(bob, 50n).simulate({
 });
 
 const maxFeesPerGas = (await node.getCurrentMinFees()).mul(1.5);
-const gasSettings = GasSettings.default({ maxFeesPerGas });
+// v4.2.0: `GasSettings.default(...)` was renamed to `GasSettings.fallback(...)`.
+// For simulation/estimation, prefer `GasSettings.forEstimation(...)` in conjunction with
+// `skipTxValidation: true`. `EmbeddedWallet.simulateTx` already wires this automatically.
+const gasSettings = GasSettings.fallback({ maxFeesPerGas });
 const paymentMethod = new SponsoredFeePaymentMethod(fpcAddress);
 
 await token.methods.transfer(bob, 50n).send({

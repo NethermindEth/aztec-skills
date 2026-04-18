@@ -1,6 +1,6 @@
 # Aztec Testing Patterns
 
-All patterns assume pin `v4.1.3` (`e696cf677877d88626834b117a19b7db06bef217`).
+All patterns assume pin `v4.2.0` (`f8c89cf4345df6c4ca9e66ea9b738e96070abc5a`).
 
 ## Pattern 1: Reusable Noir Setup Helper
 
@@ -142,19 +142,35 @@ const [alice, bob] = await registerInitialLocalNetworkAccountsInWallet(wallet);
 
 ## Pattern 8: TypeScript Deploy + Simulate + Send
 
-Use this as the default contract integration test shape.
+Use this as the default contract integration test shape. `TokenContract.deploy(...)` below does not require `additionalScopes`; contracts that initialize private storage in their constructor need the follow-up private-storage deploy shape.
 
 ```typescript
 import { TokenContract } from "@aztec/noir-contracts.js/Token";
 
-const { contract: token } = await TokenContract.deploy(wallet, alice, "TestToken", "TST", 18).send({
-  from: alice,
-});
+const { contract: token } = await TokenContract.deploy(wallet, alice, "TestToken", "TST", 18).send({ from: alice });
 
 await token.methods.mint_to_public(alice, 1000n).send({ from: alice });
 
 const { result: balance } = await token.methods.balance_of_public(alice).simulate({ from: alice });
 expect(balance).toBe(1000n);
+```
+
+For a constructor that writes contract-owned private storage, derive and register contract keys before sending:
+
+```typescript
+import { Fr } from "@aztec/aztec.js/fields";
+import { deriveKeys } from "@aztec/aztec.js/keys";
+
+const contractSecretKey = Fr.random();
+const publicKeys = (await deriveKeys(contractSecretKey)).publicKeys;
+const deployMethod = MyPrivateStorageContract.deployWithPublicKeys(publicKeys, wallet, alice, initialValue);
+const instance = await deployMethod.getInstance({ deployer: alice });
+await wallet.registerContract(instance, MyPrivateStorageContract.artifact, contractSecretKey);
+
+const { contract } = await deployMethod.send({
+  from: alice,
+  additionalScopes: [instance.address],
+});
 ```
 
 ## Pattern 9: TypeScript Private Authwit Delegation

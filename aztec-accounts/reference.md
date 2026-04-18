@@ -3,8 +3,8 @@
 ## Scope and Pin
 
 - Skill: `aztec-accounts`
-- Version label: `v4.1.3`
-- Commit SHA: `e696cf677877d88626834b117a19b7db06bef217`
+- Version label: `v4.2.0`
+- Commit SHA: `f8c89cf4345df6c4ca9e66ea9b738e96070abc5a`
 - Primary source roots:
   - `yarn-project/accounts`
   - `yarn-project/entrypoints`
@@ -22,15 +22,15 @@
 ```bash
 git clone https://github.com/AztecProtocol/aztec-packages.git
 cd aztec-packages
-git checkout v4.1.3
+git checkout v4.2.0
 git status
 git rev-parse HEAD
 ```
 
 Expected:
 
-- `HEAD detached at v4.1.3`
-- `e696cf677877d88626834b117a19b7db06bef217`
+- `HEAD detached at v4.2.0`
+- `f8c89cf4345df6c4ca9e66ea9b738e96070abc5a`
 
 ## Primary Source Anchors
 
@@ -41,8 +41,6 @@ Accounts:
 - `yarn-project/accounts/src/defaults/account_contract.ts`
 - `yarn-project/accounts/src/schnorr/index.ts`
 - `yarn-project/accounts/src/schnorr/account_contract.ts`
-- `yarn-project/accounts/src/single_key/index.ts`
-- `yarn-project/accounts/src/single_key/account_contract.ts`
 - `yarn-project/accounts/src/ecdsa/ecdsa_k/index.ts`
 - `yarn-project/accounts/src/ecdsa/ecdsa_k/account_contract.ts`
 - `yarn-project/accounts/src/ecdsa/ecdsa_r/index.ts`
@@ -92,10 +90,10 @@ From `yarn-project/accounts/package.json`:
   - `@aztec/accounts/ecdsa/lazy`
   - `@aztec/accounts/schnorr`
   - `@aztec/accounts/schnorr/lazy`
-  - `@aztec/accounts/single_key`
-  - `@aztec/accounts/single_key/lazy`
-  - `@aztec/accounts/stub`
-  - `@aztec/accounts/stub/lazy`
+  - `@aztec/accounts/stub/schnorr`
+  - `@aztec/accounts/stub/schnorr/lazy`
+  - `@aztec/accounts/stub/ecdsa`
+  - `@aztec/accounts/stub/ecdsa/lazy`
   - `@aztec/accounts/testing`
   - `@aztec/accounts/testing/lazy`
   - `@aztec/accounts/copy-cat`
@@ -124,7 +122,7 @@ The pinned `yarn-project/accounts/README.md` still documents `getSchnorrAccount(
 
 The current code-backed surface used by this skill is:
 
-- account contract classes such as `SchnorrAccountContract`, `EcdsaKAccountContract`, `EcdsaRAccountContract`, `SingleKeyAccountContract`
+- account contract classes such as `SchnorrAccountContract`, `EcdsaKAccountContract`, `EcdsaRAccountContract`, `EcdsaRSSHAccountContract`
 - deterministic address helper `getSchnorrAccountContractAddress(...)`
 - lifecycle wiring through:
   - `AccountManager.create(...)`
@@ -144,18 +142,6 @@ Use the code surface above when the README and source diverge.
 - auth witness provider: `SchnorrAuthWitnessProvider`
 - deterministic address helper:
   - `getSchnorrAccountContractAddress(secret, salt, signingPrivateKey?)`
-
-### SingleKey
-
-- `SingleKeyAccountContract`
-- `SingleKeyBaseAccountContract`
-- constructor arg: `GrumpkinScalar encryptionPrivateKey`
-- initializer: `undefined`
-- auth witness includes:
-  - account public keys as fields
-  - Schnorr signature
-  - partial address
-- intended for testing only
 
 ### ECDSA secp256k1
 
@@ -295,7 +281,8 @@ Behavior:
   - `skipClassPublication: true`
   - `skipInstancePublication: true`
   - `skipInitialization: false`
-- if `from`/deployer is `AztecAddress.ZERO`, self-funding path is enabled
+- for `send`/`simulate`/`profile`, `from: NO_FROM` (imported from `@aztec/aztec.js/account`) is converted to `deployer: AztecAddress.ZERO`; direct `request(...)` callers must pass `deployer: AztecAddress.ZERO` themselves to enable the self-funding path. The method wraps `[deployment, feePayment]` via `DefaultMultiCallEntrypoint` + `mergeExecutionPayloads` so `DefaultEntrypoint` can execute both calls as a single private payload
+- `skipClassPublication: true` is unavailable for account contracts that expose public functions with a private initializer: the public init nullifier is emitted via an auto-enqueued public call that requires the class to be published onchain
 
 `AccountEntrypointMetaPaymentMethod` (`aztec.js/src/wallet/account_entrypoint_meta_payment_method.ts`):
 

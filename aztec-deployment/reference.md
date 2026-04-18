@@ -3,8 +3,8 @@
 ## Scope and Pin
 
 - Skill: `aztec-deployment`
-- Version label: `v4.1.3`
-- Commit SHA: `e696cf677877d88626834b117a19b7db06bef217`
+- Version label: `v4.2.0`
+- Commit SHA: `f8c89cf4345df6c4ca9e66ea9b738e96070abc5a`
 - Primary source map: `docs/internal_notes/llm_docs_skill_candidates.md`
 - Upstream repo: `https://github.com/AztecProtocol/aztec-packages`
 
@@ -13,15 +13,15 @@
 ```bash
 git clone https://github.com/AztecProtocol/aztec-packages.git
 cd aztec-packages
-git checkout v4.1.3
+git checkout v4.2.0
 git status
 git rev-parse HEAD
 ```
 
 Expected:
 
-- `HEAD detached at v4.1.3`
-- `e696cf677877d88626834b117a19b7db06bef217`
+- `HEAD detached at v4.2.0`
+- `f8c89cf4345df6c4ca9e66ea9b738e96070abc5a`
 
 ## Deployment-Only Source Corpus
 
@@ -83,15 +83,16 @@ Lifecycle meaning:
 
 Minimum readiness to call:
 
-- Private function with `#[noinitcheck]`: address known is enough.
+- Private function with `#[noinitcheck]`: address known is enough. (`#[noinitcheck]` is retained in v4.2.0 — do not confuse with the separate `#[allow_phase_change]` phase-check attribute.)
 - Private function with init checks: requires initialized contract.
 - Public function: requires class registration + instance publication (+ initialization if required by logic).
+- `#[only_self]` private functions implicitly skip the init check (as if marked `#[noinitcheck]`) in v4.2.0; any external function invoked during a private initializer must therefore be marked `#[only_self]`.
 
 Operational check data:
 
 - `wallet.getContractMetadata(address)`:
 - `instance`
-- `isContractInitialized`
+- `initializationStatus: ContractInitializationStatus` — enum: `INITIALIZED` / `UNINITIALIZED` / `UNKNOWN` (imported from `@aztec/aztec.js/wallet`). `UNKNOWN` means the instance is not registered in this wallet so its init state cannot be determined.
 - `isContractPublished`
 - `isContractUpdated`
 - `updatedContractClassId`
@@ -130,9 +131,11 @@ Payment format:
 Supported method values in this pin:
 
 - `fee_juice`
-- `fpc-public`
-- `fpc-private`
 - `fpc-sponsored`
+- `fpc-public` — custom-token FPCs are not on the default public setup allowlist at v4.2.0; this method works only on local/custom networks where the FPC's token pair is whitelisted. It is deprecated for public/mainnet use.
+- `fpc-private` — same caveat as `fpc-public`; deprecated for public/mainnet use.
+
+For public/mainnet flows prefer `fee_juice` (after bridging Fee Juice from L1) or a Fee-Juice-only FPC; use `fpc-sponsored` for local/devnet onboarding.
 
 ## `aztec-wallet` Deployment Sequences
 
@@ -176,7 +179,7 @@ Deployment `send(...)` options (from `DeployOptions`):
 
 Useful patterns:
 
-- `deployMethod.getInstance({ contractAddressSalt })` before sending for predicted address
+- `deployMethod.getInstance({ contractAddressSalt, deployer: from })` before `send({ from, contractAddressSalt })`; omit `deployer` only for universal/`NO_FROM` address computation
 - `deployMethod.register()` then batch deploy + first call in same transaction
 
 ## Verification Runbook
@@ -185,7 +188,7 @@ After each deployment:
 
 1. capture contract address and tx hash
 2. fetch tx status/receipt
-3. check contract metadata (`isContractInitialized`, `isContractPublished`)
+3. check contract metadata (`initializationStatus === ContractInitializationStatus.INITIALIZED`, `isContractPublished`)
 4. check class metadata (`isContractClassPubliclyRegistered`) if public functions exist
 5. only then execute public interactions
 
@@ -222,5 +225,5 @@ Address mismatch when registering external contract:
 
 - Keep this skill self-contained for common deploy flows.
 - Use remote references only when needed:
-- `https://github.com/AztecProtocol/aztec-packages/tree/v4.1.3`
+- `https://github.com/AztecProtocol/aztec-packages/tree/v4.2.0`
 - Avoid local machine absolute paths.

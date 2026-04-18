@@ -2,10 +2,10 @@
 name: aztec-wallet-sdk
 description: Use this skill when integrating Aztec wallet connectivity with @aztec/wallet-sdk, including discovery/session flows, secure-channel key exchange, extension handlers, encrypted messaging, and BaseWallet implementations.
 license: Proprietary. LICENSE.txt has complete terms
-compatibility: Pinned to aztec-packages v4.1.3 (commit e696cf677877d88626834b117a19b7db06bef217).
+compatibility: Pinned to aztec-packages v4.2.0 (commit f8c89cf4345df6c4ca9e66ea9b738e96070abc5a).
 metadata:
-  version_label: v4.1.3
-  commit_sha: e696cf677877d88626834b117a19b7db06bef217
+  version_label: v4.2.0
+  commit_sha: f8c89cf4345df6c4ca9e66ea9b738e96070abc5a
   source_map: aztec-packages/yarn-project/wallet-sdk
 ---
 
@@ -35,8 +35,8 @@ Out of scope:
 Use the upstream repository and pin:
 
 - Repo: `https://github.com/AztecProtocol/aztec-packages`
-- Tag: `v4.1.3`
-- Commit: `e696cf677877d88626834b117a19b7db06bef217`
+- Tag: `v4.2.0`
+- Commit: `f8c89cf4345df6c4ca9e66ea9b738e96070abc5a`
 - Source root: `yarn-project/wallet-sdk`
 
 Checkout example:
@@ -44,11 +44,11 @@ Checkout example:
 ```bash
 git clone https://github.com/AztecProtocol/aztec-packages.git
 cd aztec-packages
-git checkout v4.1.3
+git checkout v4.2.0
 git status
 ```
 
-Expected status includes `HEAD detached at v4.1.3`.
+Expected status includes `HEAD detached at v4.2.0`.
 
 ## Operating Rules
 
@@ -70,7 +70,7 @@ scripts/install_wallet_sdk_deps.sh npm
 ```
 
 ```typescript
-import { Fr } from '@aztec/foundation/fields';
+import { Fr } from '@aztec/aztec.js/fields';
 import { WalletManager } from '@aztec/wallet-sdk/manager';
 import { hashToEmoji } from '@aztec/wallet-sdk/crypto';
 
@@ -163,6 +163,7 @@ Content script:
 - `createAuthWit`, `getPrivateEvents`
 - `getContractMetadata`, `getContractClassMetadata`
 - Override capabilities handling with `requestCapabilities(...)` for external wallets.
+- `BaseWallet.sendTx` returns `{ receipt?, txHash?, offchainEffects, offchainMessages }`. Custom `Wallet` / `BaseWallet` implementations must call `extractOffchainOutput(provenTx.getOffchainEffects(), provenTx.publicInputs.constants.anchorBlockHeader.globalVariables.timestamp)` (the anchor-block timestamp argument is mandatory in v4.2.0) and spread the result into the returned object — the `OffchainMessage.anchorBlockTimestamp` field added in this release is set from that argument.
 
 ### 7. Session Lifecycle and Disconnect Handling
 

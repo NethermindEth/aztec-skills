@@ -3,8 +3,8 @@
 ## Scope and Pin
 
 - Skill: `aztec-js`
-- Version label: `v4.1.3`
-- Commit SHA: `e696cf677877d88626834b117a19b7db06bef217`
+- Version label: `v4.2.0`
+- Commit SHA: `f8c89cf4345df6c4ca9e66ea9b738e96070abc5a`
 - Primary source map: `docs/internal_notes/llm_docs_skill_candidates.md`
 - Upstream repo: `https://github.com/AztecProtocol/aztec-packages`
 
@@ -13,15 +13,15 @@
 ```bash
 git clone https://github.com/AztecProtocol/aztec-packages.git
 cd aztec-packages
-git checkout v4.1.3
+git checkout v4.2.0
 git status
 git rev-parse HEAD
 ```
 
 Expected:
 
-- `HEAD detached at v4.1.3`
-- `e696cf677877d88626834b117a19b7db06bef217`
+- `HEAD detached at v4.2.0`
+- `f8c89cf4345df6c4ca9e66ea9b738e96070abc5a`
 
 ## Pinned Source Corpus
 
@@ -55,7 +55,7 @@ Referenced examples and tests:
 
 Remote pinned docs root:
 
-- `https://github.com/AztecProtocol/aztec-packages/tree/v4.1.3/docs`
+- `https://github.com/AztecProtocol/aztec-packages/tree/v4.2.0/docs`
 
 ## Full API Coverage Matrix
 
@@ -76,7 +76,7 @@ This skill covers all packages present in the pinned devnet API corpus.
 Notes:
 
 - API markdown headers may report a generated package version label differing from the repository pin.
-- For this skill, treat the repository pin (`v4.1.3`, commit above) as authoritative.
+- For this skill, treat the repository pin (`v4.2.0`, commit above) as authoritative.
 
 ## Package-by-Package Usage Map
 
@@ -163,7 +163,7 @@ Use as protocol and utility layers:
 
 - `MyContract.deploy(wallet, ...args).send({ from, ...opts })` — waited deploys return `{ contract, receipt, ... }`
 - `MyContract.deployWithOpts({ wallet, method }, ...args).send({ from, ...opts })`
-- `deployMethod.getInstance({ contractAddressSalt })`
+- `deployMethod.getInstance({ contractAddressSalt, deployer: from })` before `send({ from, contractAddressSalt })`; omit `deployer` only for universal/`NO_FROM` address computation
 - `deployMethod.register()` for batched deployment+call flows
 
 ### Contract interaction
@@ -182,11 +182,13 @@ Use as protocol and utility layers:
 ### Fees
 
 - `simulate({ fee: { estimateGas: true, estimatedGasPadding } })`
-- `GasSettings.default(...)` / `GasSettings.from(...)`
+- `GasSettings.fallback({ maxFeesPerGas, ... })` for on-chain sends (replaces the v4.1.x `GasSettings.default(...)`; `DEFAULT_GAS_LIMIT` / `DEFAULT_TEARDOWN_GAS_LIMIT` constants were removed)
+- `GasSettings.forEstimation({ maxFeesPerGas, ... })` for simulation/estimation only; must be paired with `skipTxValidation: true` on public simulation (`EmbeddedWallet` wires this automatically)
+- `GasSettings.from(...)` for explicit control over every field
 - supported payment methods:
-- `SponsoredFeePaymentMethod`
-- `FeeJuicePaymentMethodWithClaim`
-- avoid `PrivateFeePaymentMethod` and `PublicFeePaymentMethod` for mainnet-targeted flows; both are deprecated upstream.
+  - `SponsoredFeePaymentMethod` (local/devnet)
+  - `FeeJuicePaymentMethodWithClaim` (after bridging Fee Juice from L1)
+- avoid `PrivateFeePaymentMethod` and `PublicFeePaymentMethod`: in v4.2.0 custom-token FPCs are not on the default public setup allowlist, so these methods (and the CLI `fpc-public` / `fpc-private` shortcuts) cannot be used on public/mainnet networks. They remain exported for local/custom-network flows but are deprecated.
 
 ### Authwit
 
@@ -238,7 +240,7 @@ Before first public call on a deployed contract:
 
 1. `metadata = await wallet.getContractMetadata(contractAddress)`
 2. confirm `metadata.instance` exists
-3. confirm `metadata.isContractInitialized` when applicable
+3. confirm `metadata.initializationStatus === ContractInitializationStatus.INITIALIZED` when applicable (enum values: `INITIALIZED`, `UNINITIALIZED`, `UNKNOWN`; `UNKNOWN` means the instance is not registered in this wallet so the status cannot be determined — import `ContractInitializationStatus` from `@aztec/aztec.js/wallet`)
 4. confirm `metadata.isContractPublished` for public calls
 5. fetch class metadata and confirm `isContractClassPubliclyRegistered`
 

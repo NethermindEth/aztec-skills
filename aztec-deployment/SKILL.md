@@ -2,10 +2,10 @@
 name: aztec-deployment
 description: Use this skill when deploying Aztec smart contracts (not authoring them), including local-network and devnet deployment via aztec-wallet/Aztec.js, fee-payment setup, deterministic addresses, deployment verification, and contract registration workflows.
 license: Proprietary. LICENSE.txt has complete terms
-compatibility: Pinned to aztec-packages v4.1.3 (commit e696cf677877d88626834b117a19b7db06bef217).
+compatibility: Pinned to aztec-packages v4.2.0 (commit f8c89cf4345df6c4ca9e66ea9b738e96070abc5a).
 metadata:
-  version_label: v4.1.3
-  commit_sha: e696cf677877d88626834b117a19b7db06bef217
+  version_label: v4.2.0
+  commit_sha: f8c89cf4345df6c4ca9e66ea9b738e96070abc5a
   source_map: aztec-packages/docs/internal_notes/llm_docs_skill_candidates.md
 ---
 
@@ -32,19 +32,19 @@ Out of scope:
 Use the upstream repository and pin:
 
 - Repo: `https://github.com/AztecProtocol/aztec-packages`
-- Tag: `v4.1.3`
-- Commit: `e696cf677877d88626834b117a19b7db06bef217`
+- Tag: `v4.2.0`
+- Commit: `f8c89cf4345df6c4ca9e66ea9b738e96070abc5a`
 
 Checkout example:
 
 ```bash
 git clone https://github.com/AztecProtocol/aztec-packages.git
 cd aztec-packages
-git checkout v4.1.3
+git checkout v4.2.0
 git status
 ```
 
-Expected status includes `HEAD detached at v4.1.3`.
+Expected status includes `HEAD detached at v4.2.0`.
 
 ## Operating Rules
 
@@ -54,6 +54,8 @@ Expected status includes `HEAD detached at v4.1.3`.
 - Use `--payment` explicitly on devnet.
 - Use `--no-wait` only when tx tracking and retry logic are in place.
 - Keep this skill deployment-only; avoid contract authoring advice here.
+- `skipClassPublication: true` (CLI `--no-class-registration`) cannot be used for contracts that combine public functions with a private initializer: v4.2.0 emits a separate public init nullifier via an auto-enqueued public call, which requires the class to be published onchain.
+- When deploying a contract that initializes private storage in its constructor (e.g. `SinglePrivateImmutable` / `SinglePrivateMutable`), use contract public keys when the contract owns private state, register the instance with its secret key before send, precompute the instance with the same address inputs the send path will derive (`contractAddressSalt` and `deployer: from`, or no deployer for `universalDeploy`/`NO_FROM`), and pass `additionalScopes: [instance.address]` on the Aztec.js deploy options so PXE scope enforcement permits the constructor's access to the instance's own private slot. `DeployAccountMethod` already injects the account address automatically; custom account deploy flows must preserve that behavior. Cross-contract nullification (e.g. an escrow withdraw tx) likewise requires `additionalScopes` listing every address whose notes are nullified.
 
 ## Quick Start
 
@@ -175,7 +177,7 @@ Waited deploys return `{ contract, receipt, ... }`. `NO_WAIT` deploys return `{ 
 Advanced:
 
 - `deployWithOpts({ wallet, method: "public_constructor" }, ...args)`
-- `deployMethod.getInstance(...)` for predicted address
+- `deployMethod.getInstance({ contractAddressSalt, deployer })` for predicted address
 - `deployMethod.register()` before batching deployment + call
 
 ### 6. Verification and Readiness Checks
@@ -183,9 +185,11 @@ Advanced:
 Use wallet metadata checks after deployment:
 
 ```typescript
+import { ContractInitializationStatus } from "@aztec/aztec.js/wallet";
+
 const metadata = await wallet.getContractMetadata(contractAddress);
 metadata.instance;
-metadata.isContractInitialized;
+metadata.initializationStatus; // ContractInitializationStatus: INITIALIZED | UNINITIALIZED | UNKNOWN
 metadata.isContractPublished;
 ```
 
@@ -199,7 +203,7 @@ classMeta.isContractClassPubliclyRegistered;
 Interpretation:
 
 - Public calls require `isContractPublished = true`.
-- Contracts with init-guarded functions require `isContractInitialized = true`.
+- Contracts with init-guarded functions require `metadata.initializationStatus === ContractInitializationStatus.INITIALIZED`. `UNKNOWN` means the instance is not registered in this wallet, so initialization cannot be determined — register the instance first.
 - Public-function deployments require class registration.
 
 ### 7. External Contract Registration

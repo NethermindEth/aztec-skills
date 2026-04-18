@@ -1,6 +1,6 @@
 # Aztec Accounts Patterns
 
-All patterns assume pin `v4.1.3` (`e696cf677877d88626834b117a19b7db06bef217`).
+All patterns assume pin `v4.2.0` (`f8c89cf4345df6c4ca9e66ea9b738e96070abc5a`).
 
 ## Pattern 1: Create and Deploy a Schnorr Account
 

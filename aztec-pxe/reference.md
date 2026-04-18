@@ -3,8 +3,8 @@
 ## Scope and Pin
 
 - Skill: `aztec-pxe`
-- Version label: `v4.1.3`
-- Commit SHA: `e696cf677877d88626834b117a19b7db06bef217`
+- Version label: `v4.2.0`
+- Commit SHA: `f8c89cf4345df6c4ca9e66ea9b738e96070abc5a`
 - Primary source map: `yarn-project/pxe`
 - Upstream repo: `https://github.com/AztecProtocol/aztec-packages`
 
@@ -13,15 +13,15 @@
 ```bash
 git clone https://github.com/AztecProtocol/aztec-packages.git
 cd aztec-packages
-git checkout v4.1.3
+git checkout v4.2.0
 git status
 git rev-parse HEAD
 ```
 
 Expected:
 
-- `HEAD detached at v4.1.3`
-- `e696cf677877d88626834b117a19b7db06bef217`
+- `HEAD detached at v4.2.0`
+- `f8c89cf4345df6c4ca9e66ea9b738e96070abc5a`
 
 ## Primary Source Anchors
 
@@ -31,7 +31,6 @@ Expected:
 Key roots used by this skill:
 
 - `src/pxe.ts`
-- `src/access_scopes.ts`
 - `src/notes_filter.ts`
 - `src/block_synchronizer/**`
 - `src/contract_sync/**`
@@ -84,20 +83,21 @@ Execution lifecycle:
   - `opts.simulatePublic: boolean`
   - `opts.skipTxValidation?: boolean`
   - `opts.skipFeeEnforcement?: boolean`
-  - `opts.scopes: AccessScopes`
-  - `opts.overrides?: SimulationOverrides` — inject simulation-time contract instances/artifacts
+  - `opts.skipKernels?: boolean`
+  - `opts.scopes: AztecAddress[]` (required; `'ALL_SCOPES'` no longer accepted)
+  - `opts.overrides?: SimulationOverrides` — inject simulation-time contract instances/artifacts (requires `skipKernels: true`)
 - `profileTx(txRequest, opts: ProfileTxOpts)` → `Promise<TxProfileResult>`
   - `opts.profileMode: 'full' | 'execution-steps' | 'gates'`
   - `opts.skipProofGeneration?: boolean` (default: `true`)
-  - `opts.scopes: AccessScopes`
+  - `opts.scopes: AztecAddress[]` (required; `'ALL_SCOPES'` no longer accepted)
   - result: `{ executionSteps: PrivateExecutionStep[], stats: { timings: ProvingTimings, nodeRPCCalls } }`
 - `proveTx(txRequest, scopes: AztecAddress[])` → `Promise<TxProvingResult>`
   - result: `{ privateExecutionResult, publicInputs: PrivateKernelTailCircuitPublicInputs, chonkProof }`
   - `publicInputs` is non-optional
 - `executeUtility(call: FunctionCall, opts: ExecuteUtilityOpts)` → `Promise<UtilityExecutionResult>`
-- `opts.authwits?: AuthWitness[]`
-- `opts.scopes: AccessScopes`
-- result includes raw field outputs plus optional simulation stats
+  - `opts.authwits?: AuthWitness[]`
+  - `opts.scopes: AztecAddress[]` (required; `'ALL_SCOPES'` no longer accepted)
+  - result includes raw field outputs plus optional simulation stats
 
 Events/debug/lifecycle:
 
@@ -119,16 +119,21 @@ Third argument to `createPXE(aztecNode, config, options?)`:
 
 ## Access Scopes Semantics
 
-`AccessScopes` (`src/access_scopes.ts`):
+Scopes are now passed as `scopes: AztecAddress[]` directly on the PXE option types (`SimulateTxOpts`, `ProfileTxOpts`, `ExecuteUtilityOpts`). The v4.1.x `AccessScopes` alias (`'ALL_SCOPES' | AztecAddress[]`) and the `src/access_scopes.ts` module were removed in v4.2.0.
 
-- `'ALL_SCOPES'`: all registered accounts' private state and keys are accessible
-- `AztecAddress[]`: only listed accounts are accessible
-- `[]`: deny-all
+- `AztecAddress[]`: only listed accounts' private state and keys are accessible
+- `[]`: deny-all (intentionally skip sync and data access)
+- To emulate the prior "all scopes" behavior, enumerate registered accounts:
+
+```typescript
+const scopes = (await pxe.getRegisteredAccounts()).map(a => a.address);
+```
 
 Operational impact:
 
 - scopes affect contract sync coverage and key validation permissions
 - private event filter requires non-empty scope list
+- capsule operations are scope-enforced at the PXE level: a contract that touches capsules scoped to an address not in the tx's `scopes` list fails with `Scope 0x… is not in the allowed scopes list: [...]`; `AztecAddress::zero()` is always permitted (global scope)
 - empty scopes can intentionally skip sync and data access
 
 ## Tagging and Sync File Map

@@ -1,6 +1,6 @@
 # Aztec Deployment Patterns
 
-All patterns assume pin `v4.1.3` (`e696cf677877d88626834b117a19b7db06bef217`).
+All patterns assume pin `v4.2.0` (`f8c89cf4345df6c4ca9e66ea9b738e96070abc5a`).
 
 ## Pattern 1: Local Network CLI Deployment
 
@@ -110,12 +110,14 @@ const { txHash } = await MyContract.deployWithOpts(
 Use before first public call or app launch.
 
 ```typescript
+import { ContractInitializationStatus } from "@aztec/aztec.js/wallet";
+
 const metadata = await wallet.getContractMetadata(contractAddress);
 const classMeta = metadata.instance
   ? await wallet.getContractClassMetadata(metadata.instance.currentContractClassId)
   : undefined;
 
-if (!metadata.isContractInitialized) {
+if (metadata.initializationStatus !== ContractInitializationStatus.INITIALIZED) {
   throw new Error("Contract is not initialized");
 }
 if (!metadata.isContractPublished) {
@@ -126,7 +128,41 @@ if (classMeta && !classMeta.isContractClassPubliclyRegistered) {
 }
 ```
 
-## Pattern 8: Register Contract Deployed by Another Actor
+## Pattern 8: Deploy Contract that Initializes Private Storage
+
+Use when the constructor writes to any private slot owned by the instance itself (for example `SinglePrivateImmutable` or `SinglePrivateMutable`). In v4.2.0 PXE enforces capsule/private-state access against the tx's scope list, so the deployment must include the instance's own address in `additionalScopes`. If the contract owns private state, derive contract keys, deploy with public keys, and register the instance with the contract secret key before sending. `DeployAccountMethod` injects the account address automatically; generic `deploy(...)` calls must do it explicitly. For normal sends, precompute with `getInstance({ contractAddressSalt, deployer: from })`; for universal/`NO_FROM` sends, omit `deployer`.
+
+```typescript
+import { Fr } from "@aztec/aztec.js/fields";
+import { deriveKeys } from "@aztec/aztec.js/keys";
+import { MyPrivateStorageContract } from "./artifacts/MyPrivateStorage";
+
+const contractAddressSalt = new Fr(12345);
+const contractSecretKey = Fr.random();
+const contractPublicKeys = (await deriveKeys(contractSecretKey)).publicKeys;
+
+const deployMethod = MyPrivateStorageContract.deployWithPublicKeys(
+  contractPublicKeys,
+  wallet,
+  ownerAddress,
+  initialValue,
+);
+const instance = await deployMethod.getInstance({
+  contractAddressSalt,
+  deployer: ownerAddress,
+});
+await wallet.registerContract(instance, MyPrivateStorageContract.artifact, contractSecretKey);
+
+const { contract } = await deployMethod.send({
+  from: ownerAddress,
+  contractAddressSalt,
+  additionalScopes: [instance.address],
+});
+```
+
+The same pattern applies to escrow-withdraw style calls that nullify notes owned by a foreign address — include each such address in `additionalScopes`, otherwise PXE rejects the call with `Scope 0x… is not in the allowed scopes list`.
+
+## Pattern 9: Register Contract Deployed by Another Actor
 
 Use when wallet did not deploy the contract but needs to interact with it.
 

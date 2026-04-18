@@ -2,10 +2,10 @@
 name: aztec-contracts
 description: Use this skill when creating, editing, testing, debugging, or upgrading Aztec smart contracts in Noir/Aztec.nr, including storage modeling, private/public/utility functions, note delivery, authwit authorization, TestEnvironment tests, and artifact/codegen workflows.
 license: Proprietary. LICENSE.txt has complete terms
-compatibility: Pinned to aztec-packages v4.1.3 (commit e696cf677877d88626834b117a19b7db06bef217).
+compatibility: Pinned to aztec-packages v4.2.0 (commit f8c89cf4345df6c4ca9e66ea9b738e96070abc5a).
 metadata:
-  version_label: v4.1.3
-  commit_sha: e696cf677877d88626834b117a19b7db06bef217
+  version_label: v4.2.0
+  commit_sha: f8c89cf4345df6c4ca9e66ea9b738e96070abc5a
   source_map: aztec-packages/docs/internal_notes/llm_docs_skill_candidates.md
 ---
 
@@ -28,19 +28,19 @@ Primary scope:
 Use the upstream repository and pin:
 
 - Repo: `https://github.com/AztecProtocol/aztec-packages`
-- Tag: `v4.1.3`
-- Commit: `e696cf677877d88626834b117a19b7db06bef217`
+- Tag: `v4.2.0`
+- Commit: `f8c89cf4345df6c4ca9e66ea9b738e96070abc5a`
 
 Checkout example:
 
 ```bash
 git clone https://github.com/AztecProtocol/aztec-packages.git
 cd aztec-packages
-git checkout v4.1.3
+git checkout v4.2.0
 git status
 ```
 
-Expected status includes `HEAD detached at v4.1.3`.
+Expected status includes `HEAD detached at v4.2.0`.
 
 ## Operating Rules
 
@@ -49,7 +49,7 @@ Expected status includes `HEAD detached at v4.1.3`.
 - `docs/docs-developers/docs/foundational-topics/contract_creation.md`
 - `docs/docs-developers/docs/tutorials/contract_tutorials/**`
 - Use GitHub paths when needed:
-- `https://github.com/AztecProtocol/aztec-packages/tree/v4.1.3/docs/docs-developers/docs/aztec-nr`
+- `https://github.com/AztecProtocol/aztec-packages/tree/v4.2.0/docs/docs-developers/docs/aztec-nr`
 - Prefer protocol-correct behavior over stylistic churn.
 - Keep function intent explicit: execution domain, state domain, and call path.
 - Never leave note/event delivery implicit.
@@ -137,8 +137,8 @@ pub contract MyContract {
 - `#[external("utility")] unconstrained`: offchain query/helper logic.
 - `#[view]`: read-only private/public external functions.
 - `#[initializer]`: constructor-like setup.
-- `#[noinitcheck]`: only where pre-init calls are explicitly needed.
-- `#[only_self]`: public/private functions only callable by the same contract.
+- `#[noinitcheck]`: only where pre-init calls are explicitly needed. (Do not confuse with `#[allow_phase_change]`, which is a separate phase-check override and is not a replacement for `#[noinitcheck]`.)
+- `#[only_self]`: public/private functions only callable by the same contract. In v4.2.0, `#[only_self]` implicitly skips the init check (it behaves as if also marked `#[noinitcheck]`), which means external functions invoked during a private initializer **must** be `#[only_self]`.
 - `#[authorize_once("from", "authwit_nonce")]`: delegated actions with replay protection.
 
 ### 4. Note/Event Delivery
@@ -172,7 +172,8 @@ Known caveat in pinned docs/code:
 - Contracts with public entrypoints usually require class registration plus instance public deployment for public calls.
 - Private-only contracts can often operate without public deployment.
 - `without_initializer()` plus no `#[initializer]` means initialized-by-design at deploy time.
-- `#[noinitcheck]` functions may be callable before initialization.
+- `#[noinitcheck]` functions may be callable before initialization. `#[only_self]` functions also implicitly skip the init check in v4.2.0.
+- v4.2.0 emits two separate initialization nullifiers (one private, one public). Contracts that expose public functions alongside a private initializer cannot use `skipClassPublication: true` at deploy time, because the public init nullifier is emitted via an auto-enqueued public call that requires the class to be published onchain.
 
 ### 7. Authwit
 

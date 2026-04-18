@@ -3,8 +3,8 @@
 ## Scope and Pin
 
 - Skill: `aztec-wallet-sdk`
-- Version label: `v4.1.3`
-- Commit SHA: `e696cf677877d88626834b117a19b7db06bef217`
+- Version label: `v4.2.0`
+- Commit SHA: `f8c89cf4345df6c4ca9e66ea9b738e96070abc5a`
 - Primary source map: `yarn-project/wallet-sdk`
 - Upstream repo: `https://github.com/AztecProtocol/aztec-packages`
 
@@ -13,15 +13,15 @@
 ```bash
 git clone https://github.com/AztecProtocol/aztec-packages.git
 cd aztec-packages
-git checkout v4.1.3
+git checkout v4.2.0
 git status
 git rev-parse HEAD
 ```
 
 Expected:
 
-- `HEAD detached at v4.1.3`
-- `e696cf677877d88626834b117a19b7db06bef217`
+- `HEAD detached at v4.2.0`
+- `f8c89cf4345df6c4ca9e66ea9b738e96070abc5a`
 
 ## Pinned Source Corpus
 
@@ -148,6 +148,7 @@ From pinned `yarn-project/wallet-sdk/package.json`:
 - `extractOptimizablePublicStaticCalls`
 - `simulateViaNode`
 - `buildMergedSimulationResult`
+- `sendTx(executionPayload, opts)` returns `{ receipt?, txHash?, offchainEffects, offchainMessages }`. Implementations that override `sendTx` must call `extractOffchainOutput(provenTx.getOffchainEffects(), provenTx.publicInputs.constants.anchorBlockHeader.globalVariables.timestamp)` and spread the result — the timestamp argument is required in v4.2.0 (signature: `extractOffchainOutput(effects, anchorBlockTimestamp)`) so that each emitted `OffchainMessage` carries its `anchorBlockTimestamp`.
 
 ## Protocol and Security Invariants
 
@@ -211,6 +212,16 @@ From pinned `yarn-project/wallet-sdk/package.json`:
 - `simulateTx`, `profileTx`, `sendTx`
 - `createAuthWit`, `registerContract`, `getPrivateEvents`
 - `getContractMetadata`, `getContractClassMetadata`
+- note that `getContractMetadata(...)` now returns `initializationStatus: ContractInitializationStatus` (values: `INITIALIZED` / `UNINITIALIZED` / `UNKNOWN`) instead of the boolean `isContractInitialized` field
+
+### EmbeddedWallet PXE options
+
+`EmbeddedWalletOptions` (from `@aztec/wallets/embedded`) now exposes a unified `pxe: EmbeddedWalletPXEOptions` field covering both PXE config overrides and creation dependencies (custom store, prover, simulator). The v4.1.x `pxeConfig` / `pxeOptions` fields are kept for backward compatibility but are marked `@deprecated` in v4.2.0 and scheduled for removal — new code should pass a single `pxe: { …config, loggers?, loggerActorLabel?, proverOrOptions?, store?, simulator? }` object.
+
+### Bypass-entrypoint sends and multicall entrypoint
+
+- `NO_FROM` (from `@aztec/aztec.js/account`) is the v4.2.0 sentinel for routing a call past the account entrypoint — it replaces the v4.1.x `AztecAddress.ZERO` placeholder. `NO_FROM` is routed through `DefaultEntrypoint`, which supports a single private call only.
+- For multi-call flows (e.g. account-contract self-deployment that also submits a Fee Juice claim, or app-sponsored FPC patterns), wrap the combined payload with `DefaultMultiCallEntrypoint` + `mergeExecutionPayloads` so `DefaultEntrypoint` can dispatch both calls as a single private payload. This is the pattern `DeployAccountMethod.request(...)` uses for self-deployments.
 
 ## Extraction Helpers
 

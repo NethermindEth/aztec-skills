@@ -81,7 +81,6 @@ if [[ -n "$pxe_dir" ]]; then
     "package.json"
     "README.md"
     "src/pxe.ts"
-    "src/access_scopes.ts"
     "src/debug/pxe_debug_utils.ts"
     "src/tagging/index.ts"
     "src/entrypoints/server/index.ts"

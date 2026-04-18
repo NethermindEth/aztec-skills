@@ -2,10 +2,10 @@
 name: aztec-pxe
 description: Use this skill when implementing or debugging direct PXE workflows in TypeScript, including private execution lifecycle, note discovery/synchronization, sender/recipient tagging, private events, scopes, and oracle/debug checks.
 license: Proprietary. LICENSE.txt has complete terms
-compatibility: Pinned to aztec-packages v4.1.3 (commit e696cf677877d88626834b117a19b7db06bef217).
+compatibility: Pinned to aztec-packages v4.2.0 (commit f8c89cf4345df6c4ca9e66ea9b738e96070abc5a).
 metadata:
-  version_label: v4.1.3
-  commit_sha: e696cf677877d88626834b117a19b7db06bef217
+  version_label: v4.2.0
+  commit_sha: f8c89cf4345df6c4ca9e66ea9b738e96070abc5a
   source_map: aztec-packages/yarn-project/pxe
 ---
 
@@ -34,8 +34,8 @@ Out of scope:
 Use the upstream repository and pin:
 
 - Repo: `https://github.com/AztecProtocol/aztec-packages`
-- Tag: `v4.1.3`
-- Commit: `e696cf677877d88626834b117a19b7db06bef217`
+- Tag: `v4.2.0`
+- Commit: `f8c89cf4345df6c4ca9e66ea9b738e96070abc5a`
 - Source root: `yarn-project/pxe`
 
 Checkout example:
@@ -43,16 +43,17 @@ Checkout example:
 ```bash
 git clone https://github.com/AztecProtocol/aztec-packages.git
 cd aztec-packages
-git checkout v4.1.3
+git checkout v4.2.0
 git status
 ```
 
-Expected status includes `HEAD detached at v4.1.3`.
+Expected status includes `HEAD detached at v4.2.0`.
 
 ## Operating Rules
 
 - Treat PXE as a serialized execution environment: high-level jobs are queued and run one-at-a-time.
-- Always pass explicit `scopes` unless intentionally using `'ALL_SCOPES'`.
+- Always pass an explicit `scopes: AztecAddress[]` list; the `'ALL_SCOPES'` sentinel was removed. To emulate the old "see everything" behavior, pass the enumerated list of registered addresses: `scopes = (await pxe.getRegisteredAccounts()).map(a => a.address)`.
+- Capsule access is enforced at the PXE level in v4.2.0: a contract touching capsules scoped to an address not in the tx's `scopes` list fails at runtime with `Scope 0x… is not in the allowed scopes list: [...]`. `AztecAddress::zero()` is always permitted (global scope).
 - Register recipient accounts with `registerAccount(...)` before expecting note or private event visibility.
 - Register counterpart senders with `registerSender(...)` when syncing tagged logs across peers.
 - Use `simulateTx` before `proveTx`; only prove after simulation and sync checks pass.

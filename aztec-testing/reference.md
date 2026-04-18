@@ -3,8 +3,8 @@
 ## Scope and Pin
 
 - Skill: `aztec-testing`
-- Version label: `v4.1.3`
-- Commit SHA: `e696cf677877d88626834b117a19b7db06bef217`
+- Version label: `v4.2.0`
+- Commit SHA: `f8c89cf4345df6c4ca9e66ea9b738e96070abc5a`
 - Primary source map: `docs/internal_notes/llm_docs_skill_candidates.md`
 - Upstream repo: `https://github.com/AztecProtocol/aztec-packages`
 
@@ -13,15 +13,15 @@
 ```bash
 git clone https://github.com/AztecProtocol/aztec-packages.git
 cd aztec-packages
-git checkout v4.1.3
+git checkout v4.2.0
 git status
 git rev-parse HEAD
 ```
 
 Expected:
 
-- `HEAD detached at v4.1.3`
-- `e696cf677877d88626834b117a19b7db06bef217`
+- `HEAD detached at v4.2.0`
+- `f8c89cf4345df6c4ca9e66ea9b738e96070abc5a`
 
 ## Pinned Testing Source Corpus
 
@@ -51,7 +51,7 @@ Primary code fanout used by testing docs:
 
 Remote pinned docs root:
 
-- `https://github.com/AztecProtocol/aztec-packages/tree/v4.1.3/docs`
+- `https://github.com/AztecProtocol/aztec-packages/tree/v4.2.0/docs`
 
 ## TestEnvironment API Map
 

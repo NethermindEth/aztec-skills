@@ -1,11 +1,11 @@
 ---
 name: aztec-accounts
-description: Use this skill when working with Aztec account implementations and lifecycle flows, including Schnorr/ECDSA/SingleKey account flavors, account abstraction entrypoints, transaction routing, key-store integration, deployment, and wallet reconstruction.
+description: Use this skill when working with Aztec account implementations and lifecycle flows, including Schnorr/ECDSA account flavors, account abstraction entrypoints, transaction routing, key-store integration, deployment, and wallet reconstruction.
 license: Proprietary. LICENSE.txt has complete terms
-compatibility: Pinned to aztec-packages v4.1.3 (commit e696cf677877d88626834b117a19b7db06bef217).
+compatibility: Pinned to aztec-packages v4.2.0 (commit f8c89cf4345df6c4ca9e66ea9b738e96070abc5a).
 metadata:
-  version_label: v4.1.3
-  commit_sha: e696cf677877d88626834b117a19b7db06bef217
+  version_label: v4.2.0
+  commit_sha: f8c89cf4345df6c4ca9e66ea9b738e96070abc5a
   source_map: aztec-packages/yarn-project/accounts
 ---
 
@@ -17,7 +17,7 @@ Use this skill for Aztec account implementation and account-lifecycle work.
 
 Primary scope:
 
-- choosing and implementing account flavors (`Schnorr`, `ECDSA`, `SingleKey`)
+- choosing and implementing account flavors (`Schnorr`, `ECDSA`)
 - deterministic account creation inputs (`secret`, `salt`, signing key/public key)
 - deployment via `AccountManager` and wallet account helpers
 - reconstructing accounts and wallets from existing material
@@ -36,8 +36,8 @@ Out of scope:
 Use the upstream repository and pin:
 
 - Repo: `https://github.com/AztecProtocol/aztec-packages`
-- Tag: `v4.1.3`
-- Commit: `e696cf677877d88626834b117a19b7db06bef217`
+- Tag: `v4.2.0`
+- Commit: `f8c89cf4345df6c4ca9e66ea9b738e96070abc5a`
 - Primary roots:
   - `yarn-project/accounts`
   - `yarn-project/entrypoints`
@@ -48,16 +48,16 @@ Checkout example:
 ```bash
 git clone https://github.com/AztecProtocol/aztec-packages.git
 cd aztec-packages
-git checkout v4.1.3
+git checkout v4.2.0
 git status
 ```
 
-Expected status includes `HEAD detached at v4.1.3`.
+Expected status includes `HEAD detached at v4.2.0`.
 
 ## Operating Rules
 
 - Treat `secret + salt + account flavor + signing key/public key` as the account identity tuple. Change any of them and the address changes.
-- Prefer `Schnorr` for most production use cases, `ECDSA` for Ethereum-style signer integrations, and `SingleKey` only for testing.
+- Prefer `Schnorr` for most production use cases, and `ECDSA` for Ethereum-style signer integrations.
 - Distinguish the account secret from the signing key:
   - the secret derives the privacy/viewing/nullifier/tagging keys
   - the signing key authorizes authwits for the account contract
@@ -112,9 +112,6 @@ console.log(accountManager.address.toString());
 - `EcdsaRSSHAccountContract`
   - secp256r1 auth via SSH agent signing
   - recovery depends on the same SSH public key identity
-- `SingleKeyAccountContract`
-  - one Grumpkin key for encryption and auth
-  - testing-only; no initializer path
 
 ### 2. Compute and Inspect a Deterministic Account Before Deployment
 
@@ -134,6 +131,7 @@ console.log(accountManager.address.toString());
   - `skipClassPublication: true`
   - `skipInstancePublication: true`
   - `skipInitialization: false`
+- `skipClassPublication: true` is unavailable for account contracts that expose public functions with a private initializer: v4.2.0 emits a separate public init nullifier via an auto-enqueued public call, which requires the account class to be published onchain.
 - If the account is self-funding, `DeployAccountMethod` routes fee execution through `AccountEntrypointMetaPaymentMethod`.
 
 ### 4. Reconstruct an Existing Account or Wallet
@@ -243,8 +241,6 @@ the instance/artifact or account registration path was likely not re-established
 that account contract does not expose an initializer path at this pin.
 - Self-funded account deployment fails:
 inspect the wrapped payment method and resulting `AccountFeePaymentMethodOptions`.
-- `SingleKey` used in production-like flows:
-replace it with `Schnorr` or `ECDSA`; `SingleKey` is marked testing-only.
 - `lazy` account modules fail under Node:
 expected at this pin; switch to eager imports.
 - SSH-backed ECDSA recovery fails:

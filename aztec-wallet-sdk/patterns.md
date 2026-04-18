@@ -1,13 +1,13 @@
 # Aztec Wallet SDK Patterns
 
-All patterns assume pin `v4.1.3` (`e696cf677877d88626834b117a19b7db06bef217`).
+All patterns assume pin `v4.2.0` (`f8c89cf4345df6c4ca9e66ea9b738e96070abc5a`).
 
 ## Pattern 1: Stream Wallets with Async Iterator
 
 Use for dApp wallet picker flows.
 
 ```typescript
-import { Fr } from '@aztec/foundation/fields';
+import { Fr } from '@aztec/aztec.js/fields';
 import { WalletManager } from '@aztec/wallet-sdk/manager';
 
 const discovery = WalletManager.configure({

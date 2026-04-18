@@ -2,10 +2,10 @@
 name: aztec-testing
 description: Use this skill when testing Aztec smart contracts, including Noir tests with TestEnvironment and TypeScript integration tests with Aztec.js on local-network/devnet-like setups.
 license: Proprietary. LICENSE.txt has complete terms
-compatibility: Pinned to aztec-packages v4.1.3 (commit e696cf677877d88626834b117a19b7db06bef217).
+compatibility: Pinned to aztec-packages v4.2.0 (commit f8c89cf4345df6c4ca9e66ea9b738e96070abc5a).
 metadata:
-  version_label: v4.1.3
-  commit_sha: e696cf677877d88626834b117a19b7db06bef217
+  version_label: v4.2.0
+  commit_sha: f8c89cf4345df6c4ca9e66ea9b738e96070abc5a
   source_map: aztec-packages/docs/internal_notes/llm_docs_skill_candidates.md
 ---
 
@@ -32,19 +32,19 @@ Out of scope:
 Use the upstream repository and pin:
 
 - Repo: `https://github.com/AztecProtocol/aztec-packages`
-- Tag: `v4.1.3`
-- Commit: `e696cf677877d88626834b117a19b7db06bef217`
+- Tag: `v4.2.0`
+- Commit: `f8c89cf4345df6c4ca9e66ea9b738e96070abc5a`
 
 Checkout example:
 
 ```bash
 git clone https://github.com/AztecProtocol/aztec-packages.git
 cd aztec-packages
-git checkout v4.1.3
+git checkout v4.2.0
 git status
 ```
 
-Expected status includes `HEAD detached at v4.1.3`.
+Expected status includes `HEAD detached at v4.2.0`.
 
 ## Operating Rules
 
@@ -156,9 +156,12 @@ This is required for lock delays, voting windows, and delayed state behavior.
 ### 7. TypeScript Contract Integration Tests
 
 - Deploy contracts with generated bindings.
+- For contracts that initialize private storage in the constructor (e.g. `SinglePrivateImmutable` / `SinglePrivateMutable`), use contract public keys when the contract owns private state, register the instance with its secret key before send, precompute the instance with the same address inputs the send path will derive (`deployer: from` for normal sends), and pass `additionalScopes: [instance.address]` — PXE-level scope enforcement in v4.2.0 rejects the constructor's access to the instance's own private slot without it. `TestEnvironment` honours the same enforcement as production PXE, so the option is required under both harnesses.
+- For tests that nullify notes owned by another contract (escrow withdraw, cross-contract spend), include every such contract address in `additionalScopes`.
 - Assert state with `.simulate(...)`.
 - Execute state transitions with `.send(...)`.
 - Validate both pre- and post-state around each tx.
+- If a test calls `wallet.executeUtility(call, opts)`, pass `{ scopes: [addr, ...] }` (an `AztecAddress[]`); the v4.1.x `scope` (single address) option was renamed to `scopes` in v4.2.0, and the `'ALL_SCOPES'` sentinel was removed.
 
 ### 8. TypeScript Authwit Integration Tests
 

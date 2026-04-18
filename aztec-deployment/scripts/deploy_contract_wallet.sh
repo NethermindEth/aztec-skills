@@ -23,7 +23,10 @@ Environment:
   UNIVERSAL=1                 Use --universal.
   SALT_HEX=<0x...>            Use --salt.
   WAIT_FOR_MINING=0           Add --no-wait.
-  NO_CLASS_REGISTRATION=1     Add --no-class-registration.
+  NO_CLASS_REGISTRATION=1     Add --no-class-registration. Note (v4.2.0): cannot be combined
+                              with public functions + private initializer. The public init
+                              nullifier is emitted via an auto-enqueued public call that
+                              requires the class to be published onchain.
   NO_PUBLIC_DEPLOYMENT=1      Add --no-public-deployment.
 USAGE
 }
@@ -82,6 +85,9 @@ if [[ "$wait_for_mining" == "0" ]]; then
 fi
 
 if [[ "$no_class_registration" == "1" ]]; then
+  # NOTE (v4.2.0): --no-class-registration cannot be combined with contracts that expose
+  # public functions alongside a private initializer — the auto-enqueued public call that
+  # emits the public init nullifier requires the class to be published onchain.
   cmd+=(--no-class-registration)
 fi
 

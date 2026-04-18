@@ -3,8 +3,8 @@
 ## Scope and Pin
 
 - Skill: `aztec-contracts`
-- Version label: `v4.1.3`
-- Commit SHA: `e696cf677877d88626834b117a19b7db06bef217`
+- Version label: `v4.2.0`
+- Commit SHA: `f8c89cf4345df6c4ca9e66ea9b738e96070abc5a`
 - Primary source map: `docs/internal_notes/llm_docs_skill_candidates.md`
 - Upstream repo: `https://github.com/AztecProtocol/aztec-packages`
 
@@ -13,14 +13,14 @@
 ```bash
 git clone https://github.com/AztecProtocol/aztec-packages.git
 cd aztec-packages
-git checkout v4.1.3
+git checkout v4.2.0
 git status
 ```
 
 Expected state:
 
-- `HEAD detached at v4.1.3`
-- `git rev-parse HEAD` equals `e696cf677877d88626834b117a19b7db06bef217`
+- `HEAD detached at v4.2.0`
+- `git rev-parse HEAD` equals `f8c89cf4345df6c4ca9e66ea9b738e96070abc5a`
 
 ## Pinned Source Corpus
 
@@ -49,8 +49,8 @@ Referenced code fanout:
 
 For generated corpora/chunks derived from this skill, include:
 
-- `version_label: v4.1.3`
-- `commit_sha: e696cf677877d88626834b117a19b7db06bef217`
+- `version_label: v4.2.0`
+- `commit_sha: f8c89cf4345df6c4ca9e66ea9b738e96070abc5a`
 - `source_path`
 - `skill_name`
 
@@ -65,8 +65,8 @@ Exclude:
 
 Pinned environment:
 
-- Aztec packages commit: `e696cf677877d88626834b117a19b7db06bef217`
-- Release label: `v4.1.3`
+- Aztec packages commit: `f8c89cf4345df6c4ca9e66ea9b738e96070abc5a`
+- Release label: `v4.2.0`
 
 Core commands:
 
@@ -145,8 +145,8 @@ Common modifiers:
 
 - `#[view]`: read-only public/private external functions.
 - `#[initializer]`: one-time initialization entrypoint(s).
-- `#[noinitcheck]`: bypass init guard for explicit pre-init scenarios.
-- `#[only_self]`: only callable by same contract address.
+- `#[noinitcheck]`: bypass init guard for explicit pre-init scenarios. (Distinct from `#[allow_phase_change]`, which is a phase-check override and not a renamed form of `#[noinitcheck]`.)
+- `#[only_self]`: only callable by same contract address. In v4.2.0, `#[only_self]` implicitly skips the init check (equivalent to also being marked `#[noinitcheck]`), so any external function invoked during a private initializer must be `#[only_self]`.
 - `#[authorize_once("from", "authwit_nonce")]`: authwit + replay protection.
 
 ## Message Delivery Decision Matrix
@@ -177,7 +177,7 @@ Known caveat:
 - `self.call(Other::at(addr).fn(...))`: immediate same-domain call.
 - `self.view(...)`: read-only external call.
 - `self.enqueue(...)`: private -> public deferred call.
-- `self.enqueue_self.public_fn(...)` + `#[only_self]`: guarded private -> public transition.
+- `self.enqueue_self.public_fn(...)` + `#[only_self]`: guarded private -> public transition. Because `#[only_self]` skips the init check in v4.2.0, this bridge is also the required shape for any external function that runs during a private initializer.
 
 ## TestEnvironment Quick Guide
 
@@ -227,6 +227,8 @@ Notes:
 
 - No initializer + `without_initializer()` means initialized directly at deploy time.
 - `#[noinitcheck]` functions can be valid pre-init entrypoints.
+- `#[only_self]` functions also implicitly skip the init check in v4.2.0. Any external function invoked during a private initializer must be `#[only_self]`.
+- v4.2.0 emits separate private and public initialization nullifiers. Contracts combining public functions with a private initializer cannot be deployed with `skipClassPublication: true` — the public init nullifier is emitted via an auto-enqueued public call and therefore requires the class to be published onchain.
 
 ## Upgrades Runbook
 
